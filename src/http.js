@@ -4,7 +4,10 @@ export default class TodoService {
   static async getAll(filter = 'all') {
     try {
       const response = await axios.get(`https://easydev.club/api/v1/todos?filter=${filter}`);
-      return response.data.data;
+      return {
+        todos: response.data.data,
+        info: response.data.info,
+      };
     } catch (error) {
       console.log('error');
     }

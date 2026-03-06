@@ -6,6 +6,7 @@ export default function ToDo({ todo, toggleTask, removeTask, changedTask }) {
 
   const toggleEditing = () => {
     setIsEditing(!isEditing);
+    setEditedTask(todo.title);
   };
 
   const handleOnChange = (e) => {

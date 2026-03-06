@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import ToDo from './components/Todo.jsx';
 import ToDoForm from './components/ToDoForm.jsx';
-import axios from 'axios';
 import TodoService from './http.js';
 
 export default function App() {
   const [todos, setTodos] = useState([]);
   const [page, setPage] = useState('all');
+  const [info, setInfo] = useState({
+    all: 0,
+    completed: 0,
+    inWork: 0,
+  });
 
   const addTask = async (userInput) => {
     const trimmed = userInput.trim();
@@ -25,16 +29,18 @@ export default function App() {
 
   useEffect(() => {
     async function fetchTodos() {
-      const toggleTodosPages = await TodoService.getAll(page);
-      setTodos(toggleTodosPages);
+      const response = await TodoService.getAll(page);
+      setTodos(response.todos);
+      setInfo(response.info);
     }
     fetchTodos();
   }, [page]);
 
   const removeTask = async (id) => {
-    const deleteTask = await TodoService.delete(id);
-    if (!deleteTask) return;
-    setTodos([...todos.filter((todo) => todo.id !== id)]);
+    await TodoService.delete(id);
+    const response = await TodoService.getAll(page);
+    setTodos(response.todos);
+    setInfo(response.info);
   };
 
   const editTask = async (id, title) => {
@@ -42,16 +48,17 @@ export default function App() {
     if (!currentTask) return;
     const editedTask = await TodoService.edit(id, { title });
     if (!editedTask) return;
-    setTodos(todos.map((todo) => (todo.id === id ? { ...todo, editedTask } : { ...todo })));
+    setTodos((prev) => prev.map((todo) => (todo.id === id ? editedTask : todo)));
   };
 
   const handleToggle = async (id) => {
     const currentTodo = todos.find((todo) => todo.id === id);
     if (!currentTodo) return;
     const nextIsDone = !currentTodo.isDone;
-    const editToggle = await TodoService.edit(id, { isDone: nextIsDone });
-    if (!editToggle) return;
-    setTodos(todos.map((todo) => (todo.id === id ? editToggle : todo)));
+    await TodoService.edit(id, { isDone: nextIsDone });
+    const response = await TodoService.getAll(page);
+    setTodos(response.todos);
+    setInfo(response.info);
   };
 
   return (
@@ -59,16 +66,16 @@ export default function App() {
       <ToDoForm addTask={addTask} />
       <div>
         <button className={page === 'all' ? 'active-tab' : ''} onClick={() => setPage('all')}>
-          Все ({todos.length})
+          Все ({info.all})
         </button>
         <button className={page === 'inWork' ? 'active-tab' : ''} onClick={() => setPage('inWork')}>
-          В работе ({todos.filter((todo) => todo.isDone === false).length})
+          В работе ({info.inWork})
         </button>
         <button
           className={page === 'completed' ? 'active-tab' : ''}
           onClick={() => setPage('completed')}
         >
-          Сделано ({todos.filter((todo) => todo.isDone === true).length})
+          Сделано ({info.completed})
         </button>
       </div>
       {todos.map((todo) => {
