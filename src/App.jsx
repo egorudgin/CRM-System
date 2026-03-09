@@ -23,8 +23,10 @@ export default function App() {
       return;
     }
 
-    const newItem = await TodoService.create(trimmed);
-    setTodos([...todos, newItem]);
+    await TodoService.create(trimmed);
+    const response = await TodoService.getAll(page);
+    setTodos(response.todos);
+    setInfo(response.info);
   };
 
   useEffect(() => {
@@ -46,7 +48,16 @@ export default function App() {
   const editTask = async (id, title) => {
     const currentTask = todos.find((todo) => todo.id === id);
     if (!currentTask) return;
-    const editedTask = await TodoService.edit(id, { title });
+    const trimmed = title.trim();
+    if (trimmed.length < 2) {
+      alert('Минимум 2 символа');
+      return;
+    }
+    if (trimmed.length > 64) {
+      alert('Максимум 64 символа');
+      return;
+    }
+    const editedTask = await TodoService.edit(id, { title: trimmed });
     if (!editedTask) return;
     setTodos((prev) => prev.map((todo) => (todo.id === id ? editedTask : todo)));
   };
