@@ -23,26 +23,40 @@ export default function App() {
       return;
     }
 
-    await create(trimmed);
-    const response = await getAll(page);
-    setTodos(response.todos);
-    setInfo(response.info);
+    try {
+      await create(trimmed);
+      const response = await getAll(page);
+      setTodos(response.todos);
+      setInfo(response.info);
+    } catch (error) {
+      alert('Ошибка при добавлении задачи!');
+    }
   };
 
   useEffect(() => {
     async function fetchTodos() {
-      const response = await getAll(page);
-      setTodos(response.todos);
-      setInfo(response.info);
+      try {
+        const response = await getAll(page);
+        setTodos(response.todos);
+        setInfo(response.info);
+      } catch (error) {
+        alert(
+          'Ошибка обновления списка задач. Проверьте интернет-соединение и перезагрузите страницу',
+        );
+      }
     }
     fetchTodos();
   }, [page]);
 
   const removeTask = async (id) => {
-    await deleteTodo(id);
-    const response = await getAll(page);
-    setTodos(response.todos);
-    setInfo(response.info);
+    try {
+      await deleteTodo(id);
+      const response = await getAll(page);
+      setTodos(response.todos);
+      setInfo(response.info);
+    } catch (error) {
+      alert('Ошибка при удалении задачи!');
+    }
   };
 
   const editTask = async (id, title) => {
@@ -57,19 +71,27 @@ export default function App() {
       alert('Максимум 64 символа');
       return;
     }
-    const editedTask = await edit(id, { title: trimmed });
-    if (!editedTask) return;
-    setTodos((prev) => prev.map((todo) => (todo.id === id ? editedTask : todo)));
+    try {
+      const editedTask = await edit(id, { title: trimmed });
+      if (!editedTask) return;
+      setTodos((prev) => prev.map((todo) => (todo.id === id ? editedTask : todo)));
+    } catch (error) {
+      alert('Ошибка при редактировании задачи!');
+    }
   };
 
   const handleToggle = async (id) => {
     const currentTodo = todos.find((todo) => todo.id === id);
     if (!currentTodo) return;
     const nextIsDone = !currentTodo.isDone;
-    await edit(id, { isDone: nextIsDone });
-    const response = await getAll(page);
-    setTodos(response.todos);
-    setInfo(response.info);
+    try {
+      await edit(id, { isDone: nextIsDone });
+      const response = await getAll(page);
+      setTodos(response.todos);
+      setInfo(response.info);
+    } catch (error) {
+      alert('Ошибка при изменени статуса задачи!');
+    }
   };
 
   return (
