@@ -1,45 +1,61 @@
-import axios from 'axios';
+export async function getAll(filter = 'all') {
+  const response = await fetch(`https://easydev.club/api/v1/todos?filter=${filter}`);
 
-export default class TodoService {
-  static async getAll(filter = 'all') {
-    try {
-      const response = await axios.get(`https://easydev.club/api/v1/todos?filter=${filter}`);
-      return {
-        todos: response.data.data,
-        info: response.data.info,
-      };
-    } catch (error) {
-      console.log('error');
-    }
+  if (!response.ok) {
+    throw new Error('Ошибка при получении данных');
   }
 
-  static async create(title) {
-    try {
-      const response = await axios.post('https://easydev.club/api/v1/todos', {
-        title,
-        isDone: false,
-      });
-      return response.data;
-    } catch (error) {
-      console.log('error');
-    }
+  const resData = await response.json();
+
+  return {
+    todos: resData.data,
+    info: resData.info,
+  };
+}
+
+export async function create(title) {
+  const response = await fetch('https://easydev.club/api/v1/todos', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title,
+      isDone: false,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Ошибка при создании');
   }
 
-  static async edit(id, changes) {
-    try {
-      const response = await axios.put(`https://easydev.club/api/v1/todos/${id}`, changes);
-      return response.data;
-    } catch (error) {
-      console.log('error');
-    }
+  return await response.json();
+}
+
+export async function edit(id, changes) {
+  const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(changes),
+  });
+
+  if (!response.ok) {
+    throw new Error('Ошибка при редактировании');
   }
 
-  static async delete(id) {
-    try {
-      const response = await axios.delete(`https://easydev.club/api/v1/todos/${id}`);
-      return response.data;
-    } catch (error) {
-      console.log('error');
-    }
+  return await response.json();
+}
+
+export async function deleteTodo(id) {
+  const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error('Ошибка при удалении');
   }
+
+  return;
 }

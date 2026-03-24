@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import ToDo from './components/Todo.jsx';
 import ToDoForm from './components/ToDoForm.jsx';
-import TodoService from './http.js';
+import { getAll, edit, create, deleteTodo } from './api/http.js';
 
 export default function App() {
   const [todos, setTodos] = useState([]);
@@ -23,15 +23,15 @@ export default function App() {
       return;
     }
 
-    await TodoService.create(trimmed);
-    const response = await TodoService.getAll(page);
+    await create(trimmed);
+    const response = await getAll(page);
     setTodos(response.todos);
     setInfo(response.info);
   };
 
   useEffect(() => {
     async function fetchTodos() {
-      const response = await TodoService.getAll(page);
+      const response = await getAll(page);
       setTodos(response.todos);
       setInfo(response.info);
     }
@@ -39,8 +39,8 @@ export default function App() {
   }, [page]);
 
   const removeTask = async (id) => {
-    await TodoService.delete(id);
-    const response = await TodoService.getAll(page);
+    await deleteTodo(id);
+    const response = await getAll(page);
     setTodos(response.todos);
     setInfo(response.info);
   };
@@ -57,7 +57,7 @@ export default function App() {
       alert('Максимум 64 символа');
       return;
     }
-    const editedTask = await TodoService.edit(id, { title: trimmed });
+    const editedTask = await edit(id, { title: trimmed });
     if (!editedTask) return;
     setTodos((prev) => prev.map((todo) => (todo.id === id ? editedTask : todo)));
   };
@@ -66,8 +66,8 @@ export default function App() {
     const currentTodo = todos.find((todo) => todo.id === id);
     if (!currentTodo) return;
     const nextIsDone = !currentTodo.isDone;
-    await TodoService.edit(id, { isDone: nextIsDone });
-    const response = await TodoService.getAll(page);
+    await edit(id, { isDone: nextIsDone });
+    const response = await getAll(page);
     setTodos(response.todos);
     setInfo(response.info);
   };
