@@ -175,3 +175,9 @@ body {
     text-underline-offset: 6px;
     text-decoration-thickness: 2px;
 }
+
+.input-error {
+    margin-top: 4px;
+    font-size: 14px;
+    color: #d32f2f;
+}

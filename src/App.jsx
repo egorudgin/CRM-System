@@ -13,23 +13,15 @@ export default function App() {
   });
 
   const handleAddTodo = async (userInput) => {
-    const trimmedUserInput = userInput.trim();
-    if (trimmedUserInput.length < 2) {
-      alert('Минимум 2 символа');
-      return;
-    }
-    if (trimmedUserInput.length > 64) {
-      alert('Максимум 64 символа');
-      return;
-    }
-
     try {
-      await createTodo(trimmedUserInput);
+      await createTodo(userInput);
       const response = await getTodos(filteredTodos);
       setTodos(response.todos);
       setTodosCount(response.todosCount);
+      return true;
     } catch (error) {
       alert('Ошибка при добавлении задачи!');
+      return false;
     }
   };
 
@@ -61,22 +53,16 @@ export default function App() {
 
   const handleEditTodo = async (id, title) => {
     const currentTask = todos.find((todo) => todo.id === id);
-    if (!currentTask) return;
-    const trimmed = title.trim();
-    if (trimmed.length < 2) {
-      alert('Минимум 2 символа');
-      return;
-    }
-    if (trimmed.length > 64) {
-      alert('Максимум 64 символа');
-      return;
-    }
+    if (!currentTask) return false;
+
     try {
-      const editedTask = await editTodo(id, { title: trimmed });
-      if (!editedTask) return;
+      const editedTask = await editTodo(id, { title });
+      if (!editedTask) return false;
       setTodos((prev) => prev.map((todo) => (todo.id === id ? editedTask : todo)));
+      return true;
     } catch (error) {
       alert('Ошибка при редактировании задачи!');
+      return false;
     }
   };
 
