@@ -1,33 +1,33 @@
 import { useState, useEffect } from 'react';
-import ToDo from './components/Todo.jsx';
-import ToDoForm from './components/ToDoForm.jsx';
-import { getAll, edit, create, deleteTodo } from './api/http.js';
+import Todo from './components/Todo.jsx';
+import TodoForm from './components/TodoForm.jsx';
+import { getTodos, editTodo, createTodo, deleteTodo } from './api/http.js';
 
 export default function App() {
   const [todos, setTodos] = useState([]);
-  const [page, setPage] = useState('all');
-  const [info, setInfo] = useState({
+  const [filteredTodos, setFilteredTodos] = useState('all');
+  const [todosCount, setTodosCount] = useState({
     all: 0,
     completed: 0,
     inWork: 0,
   });
 
-  const addTask = async (userInput) => {
-    const trimmed = userInput.trim();
-    if (trimmed.length < 2) {
+  const handleAddTodo = async (userInput) => {
+    const trimmedUserInput = userInput.trim();
+    if (trimmedUserInput.length < 2) {
       alert('Минимум 2 символа');
       return;
     }
-    if (trimmed.length > 64) {
+    if (trimmedUserInput.length > 64) {
       alert('Максимум 64 символа');
       return;
     }
 
     try {
-      await create(trimmed);
-      const response = await getAll(page);
+      await createTodo(trimmedUserInput);
+      const response = await getTodos(filteredTodos);
       setTodos(response.todos);
-      setInfo(response.info);
+      setTodosCount(response.todosCount);
     } catch (error) {
       alert('Ошибка при добавлении задачи!');
     }
@@ -36,9 +36,9 @@ export default function App() {
   useEffect(() => {
     async function fetchTodos() {
       try {
-        const response = await getAll(page);
+        const response = await getTodos(filteredTodos);
         setTodos(response.todos);
-        setInfo(response.info);
+        setTodosCount(response.todosCount);
       } catch (error) {
         alert(
           'Ошибка обновления списка задач. Проверьте интернет-соединение и перезагрузите страницу',
@@ -46,20 +46,20 @@ export default function App() {
       }
     }
     fetchTodos();
-  }, [page]);
+  }, [filteredTodos]);
 
-  const removeTask = async (id) => {
+  const handleDeleteTodo = async (id) => {
     try {
       await deleteTodo(id);
-      const response = await getAll(page);
+      const response = await getTodos(filteredTodos);
       setTodos(response.todos);
-      setInfo(response.info);
+      setTodosCount(response.todosCount);
     } catch (error) {
       alert('Ошибка при удалении задачи!');
     }
   };
 
-  const editTask = async (id, title) => {
+  const handleEditTodo = async (id, title) => {
     const currentTask = todos.find((todo) => todo.id === id);
     if (!currentTask) return;
     const trimmed = title.trim();
@@ -72,7 +72,7 @@ export default function App() {
       return;
     }
     try {
-      const editedTask = await edit(id, { title: trimmed });
+      const editedTask = await editTodo(id, { title: trimmed });
       if (!editedTask) return;
       setTodos((prev) => prev.map((todo) => (todo.id === id ? editedTask : todo)));
     } catch (error) {
@@ -80,15 +80,15 @@ export default function App() {
     }
   };
 
-  const handleToggle = async (id) => {
+  const handleToggleTodo = async (id) => {
     const currentTodo = todos.find((todo) => todo.id === id);
     if (!currentTodo) return;
     const nextIsDone = !currentTodo.isDone;
     try {
-      await edit(id, { isDone: nextIsDone });
-      const response = await getAll(page);
+      await editTodo(id, { isDone: nextIsDone });
+      const response = await getTodos(filteredTodos);
       setTodos(response.todos);
-      setInfo(response.info);
+      setTodosCount(response.todosCount);
     } catch (error) {
       alert('Ошибка при изменени статуса задачи!');
     }
@@ -96,29 +96,35 @@ export default function App() {
 
   return (
     <div className="App">
-      <ToDoForm addTask={addTask} />
+      <TodoForm handleAddTodo={handleAddTodo} />
       <div>
-        <button className={page === 'all' ? 'active-tab' : ''} onClick={() => setPage('all')}>
-          Все ({info.all})
-        </button>
-        <button className={page === 'inWork' ? 'active-tab' : ''} onClick={() => setPage('inWork')}>
-          В работе ({info.inWork})
+        <button
+          className={filteredTodos === 'all' ? 'active-tab' : ''}
+          onClick={() => setFilteredTodos('all')}
+        >
+          Все ({todosCount.all})
         </button>
         <button
-          className={page === 'completed' ? 'active-tab' : ''}
-          onClick={() => setPage('completed')}
+          className={filteredTodos === 'inWork' ? 'active-tab' : ''}
+          onClick={() => setFilteredTodos('inWork')}
         >
-          Сделано ({info.completed})
+          В работе ({todosCount.inWork})
+        </button>
+        <button
+          className={filteredTodos === 'completed' ? 'active-tab' : ''}
+          onClick={() => setFilteredTodos('completed')}
+        >
+          Сделано ({todosCount.completed})
         </button>
       </div>
       {todos.map((todo) => {
         return (
-          <ToDo
+          <Todo
             key={todo.id}
             todo={todo}
-            toggleTask={handleToggle}
-            changedTask={editTask}
-            removeTask={removeTask}
+            handleToggleTodo={handleToggleTodo}
+            handleEditTodo={handleEditTodo}
+            handleDeleteTodo={handleDeleteTodo}
           />
         );
       })}

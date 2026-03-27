@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function ToDoForm({ addTask }) {
+export default function TodoForm({ handleAddTodo }) {
   const [userInput, setUserInput] = useState('');
 
   const handleChange = (e) => {
@@ -9,7 +9,7 @@ export default function ToDoForm({ addTask }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addTask(userInput);
+    handleAddTodo(userInput);
     setUserInput('');
   };
 

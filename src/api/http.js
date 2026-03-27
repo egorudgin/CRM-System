@@ -1,4 +1,4 @@
-export async function getAll(filter = 'all') {
+export async function getTodos(filter = 'all') {
   const response = await fetch(`https://easydev.club/api/v1/todos?filter=${filter}`);
 
   if (!response.ok) {
@@ -9,11 +9,11 @@ export async function getAll(filter = 'all') {
 
   return {
     todos: resData.data,
-    info: resData.info,
+    todosCount: resData.info,
   };
 }
 
-export async function create(title) {
+export async function createTodo(title) {
   const response = await fetch('https://easydev.club/api/v1/todos', {
     method: 'POST',
     headers: {
@@ -32,7 +32,7 @@ export async function create(title) {
   return await response.json();
 }
 
-export async function edit(id, changes) {
+export async function editTodo(id, changes) {
   const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
     method: 'PUT',
     headers: {

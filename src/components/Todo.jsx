@@ -1,43 +1,43 @@
 import { useState } from 'react';
 
-export default function ToDo({ todo, toggleTask, removeTask, changedTask }) {
+export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleEditTodo }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedTask, setEditedTask] = useState(todo.title);
+  const [editedTitle, setEditedTitle] = useState(todo.title);
 
   const toggleEditing = () => {
     setIsEditing(!isEditing);
-    setEditedTask(todo.title);
+    setEditedTitle(todo.title);
   };
 
-  const handleOnChange = (e) => {
-    setEditedTask(e.target.value);
+  const handleTitleChange = (e) => {
+    setEditedTitle(e.target.value);
   };
 
-  const saveTask = () => {
+  const handleSaveEdit = () => {
     setIsEditing(false);
-    changedTask(todo.id, editedTask);
+    handleEditTodo(todo.id, editedTitle);
   };
 
   return (
     <div key={todo.id} className="item-todo">
       <div>
-        <input type="checkbox" checked={todo.isDone} onChange={() => toggleTask(todo.id)} />
+        <input type="checkbox" checked={todo.isDone} onChange={() => handleToggleTodo(todo.id)} />
       </div>
       {isEditing ? (
-        <input value={editedTask} type="text" onChange={handleOnChange} />
+        <input value={editedTitle} type="text" onChange={handleTitleChange} />
       ) : (
         <div className={todo.isDone ? 'item-text strike' : 'item-text'}>{todo.title}</div>
       )}
 
       {isEditing ? (
         <div>
-          <button onClick={saveTask}>Save</button>
+          <button onClick={handleSaveEdit}>Save</button>
           <button onClick={toggleEditing}>Cancel</button>
         </div>
       ) : (
         <button onClick={toggleEditing}>Edit</button>
       )}
-      <div className="delete" onClick={() => removeTask(todo.id)}>
+      <div className="delete" onClick={() => handleDeleteTodo(todo.id)}>
         Х
       </div>
     </div>
