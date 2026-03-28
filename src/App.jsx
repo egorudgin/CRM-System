@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Todo from './components/Todo.jsx';
 import TodoForm from './components/TodoForm.jsx';
+import TodoFilters from './components/TodoFilters.jsx';
 import { getTodos, editTodo, createTodo, deleteTodo } from './api/http.js';
 
 export default function App() {
@@ -83,26 +84,11 @@ export default function App() {
   return (
     <div className="App">
       <TodoForm handleAddTodo={handleAddTodo} />
-      <div>
-        <button
-          className={filteredTodos === 'all' ? 'active-tab' : ''}
-          onClick={() => setFilteredTodos('all')}
-        >
-          Все ({todosCount.all})
-        </button>
-        <button
-          className={filteredTodos === 'inWork' ? 'active-tab' : ''}
-          onClick={() => setFilteredTodos('inWork')}
-        >
-          В работе ({todosCount.inWork})
-        </button>
-        <button
-          className={filteredTodos === 'completed' ? 'active-tab' : ''}
-          onClick={() => setFilteredTodos('completed')}
-        >
-          Сделано ({todosCount.completed})
-        </button>
-      </div>
+      <TodoFilters
+        filteredTodos={filteredTodos}
+        setFilteredTodos={setFilteredTodos}
+        todosCount={todosCount}
+      />
       {todos.map((todo) => {
         return (
           <Todo

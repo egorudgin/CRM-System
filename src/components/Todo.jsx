@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { validateTodoTitle } from '../helpers/validateTodoTitle.js';
 
 export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleEditTodo }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -14,33 +15,26 @@ export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleE
   const handleTitleChange = (e) => {
     const value = e.target.value;
     setEditedTitle(value);
-    const trimmedValue = value.trim();
-    if (trimmedValue.length === 0) {
+
+    if (value.trim().length === 0) {
       setError('');
       return;
     }
-    if (trimmedValue.length < 2) {
-      setError('Минимум 2 символа');
-      return;
-    }
-    if (trimmedValue.length > 64) {
-      setError('Максимум 64 символа');
-      return;
-    }
-    setError('');
+
+    const errorMessage = validateTodoTitle(value);
+    setError(errorMessage);
   };
 
   const handleSaveEdit = async () => {
-    const trimmedTitle = editedTitle.trim();
-    if (trimmedTitle.length < 2) {
-      setError('Минимум 2 символа');
+    const errorMessage = validateTodoTitle(editedTitle);
+
+    if (errorMessage) {
+      setError(errorMessage);
       return;
     }
-    if (trimmedTitle.length > 64) {
-      setError('Максимум 64 символа');
-      return;
-    }
-    const isSaved = await handleEditTodo(todo.id, trimmedTitle);
+
+    const isSaved = await handleEditTodo(todo.id, editedTitle.trim());
+
     if (isSaved) {
       setIsEditing(false);
       setError('');

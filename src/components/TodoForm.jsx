@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { validateTodoTitle } from '../helpers/validateTodoTitle.js';
 
 export default function TodoForm({ handleAddTodo }) {
   const [userInput, setUserInput] = useState('');
@@ -7,35 +8,28 @@ export default function TodoForm({ handleAddTodo }) {
   const handleChange = (e) => {
     const value = e.target.value;
     setUserInput(value);
-    const trimmedValue = value.trim();
-    if (trimmedValue.length === 0) {
+
+    if (value.trim().length === 0) {
       setError('');
       return;
     }
-    if (trimmedValue.length < 2) {
-      setError('Минимум 2 символа');
-      return;
-    }
-    if (trimmedValue.length > 64) {
-      setError('Максимум 64 символа');
-      return;
-    }
 
-    setError('');
+    const errorMessage = validateTodoTitle(value);
+    setError(errorMessage);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const trimmedUserInput = userInput.trim();
-    if (trimmedUserInput.length < 2) {
-      setError('Минимум 2 символа');
+
+    const errorMessage = validateTodoTitle(userInput);
+
+    if (errorMessage) {
+      setError(errorMessage);
       return;
     }
-    if (trimmedUserInput.length > 64) {
-      setError('Максимум 64 символа');
-      return;
-    }
-    const isCreated = await handleAddTodo(trimmedUserInput);
+
+    const isCreated = await handleAddTodo(userInput.trim());
+
     if (isCreated) {
       setUserInput('');
       setError('');
@@ -52,7 +46,9 @@ export default function TodoForm({ handleAddTodo }) {
         placeholder="Task to be done..."
         required
       />
+
       {error && <div className="input-error">{error}</div>}
+
       <button className="add-button">Add</button>
     </form>
   );
