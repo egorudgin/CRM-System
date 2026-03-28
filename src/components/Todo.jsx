@@ -44,7 +44,10 @@ export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleE
   return (
     <div className="item-todo">
       <div>
-        <input type="checkbox" checked={todo.isDone} onChange={() => handleToggleTodo(todo.id)} />
+        <label className="custom-checkbox">
+          <input type="checkbox" checked={todo.isDone} onChange={() => handleToggleTodo(todo.id)} />
+          <span className="checkmark"></span>
+        </label>
       </div>
 
       <div className="todo-content">
