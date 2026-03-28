@@ -109,6 +109,10 @@ body {
     flex: 1;
     font-size: 16px;
     color: #1f2937;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+
 }
 
 .item-todo input[type="text"] {
@@ -180,4 +184,9 @@ body {
     margin-top: 4px;
     font-size: 14px;
     color: #d32f2f;
+}
+
+.todo-content {
+    flex: 1;
+    min-width: 0;
 }

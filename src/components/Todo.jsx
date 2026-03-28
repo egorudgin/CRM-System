@@ -47,7 +47,7 @@ export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleE
         <input type="checkbox" checked={todo.isDone} onChange={() => handleToggleTodo(todo.id)} />
       </div>
 
-      <div style={{ flex: 1 }}>
+      <div className="todo-content">
         {isEditing ? (
           <>
             <input value={editedTitle} type="text" onChange={handleTitleChange} />
