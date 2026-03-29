@@ -60,18 +60,43 @@ export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleE
           <div className={todo.isDone ? 'item-text strike' : 'item-text'}>{todo.title}</div>
         )}
       </div>
-
-      {isEditing ? (
-        <div>
-          <button onClick={handleSaveEdit}>Save</button>
-          <button onClick={toggleEditing}>Cancel</button>
-        </div>
-      ) : (
-        <button onClick={toggleEditing}>Edit</button>
-      )}
-
-      <div className="delete" onClick={() => handleDeleteTodo(todo.id)}>
-        Х
+      <div className="todo-actions">
+        {isEditing ? (
+          <>
+            <button className="todo-action-btn save-btn" onClick={handleSaveEdit}>
+              Save
+            </button>
+            <button className="todo-action-btn cancel-btn" onClick={toggleEditing}>
+              Cancel
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className="todo-icon-btn edit-btn"
+              onClick={toggleEditing}
+              aria-label="Редактировать задачу"
+              title="Редактировать"
+            >
+              <svg viewBox="0 0 24 24" className="todo-icon-svg" aria-hidden="true">
+                <path
+                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm2.92 2.33H5v-.92l8.06-8.06.92.92L5.92 19.58zM20.71 7.04a1.003 1.003 0 0 0 0-1.42L18.37 3.29a1.003 1.003 0 0 0-1.42 0l-1.13 1.13 3.75 3.75 1.14-1.13z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+            <button
+              className="todo-icon-btn delete-btn"
+              onClick={() => handleDeleteTodo(todo.id)}
+              aria-label="Удалить задачу"
+              title="Удалить"
+            >
+              <span className="material-symbols-outlined" aria-hidden="true">
+                delete
+              </span>
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

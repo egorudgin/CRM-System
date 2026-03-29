@@ -71,7 +71,6 @@ body {
     font-size: 18px;
     font-weight: 600;
     color: rgba(31, 41, 55, 0.55);
-    text-decoration: none;
 }
 
 .App > div > button:hover {
@@ -156,7 +155,6 @@ body {
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
-
 }
 
 .item-todo input[type="text"] {
@@ -170,7 +168,7 @@ body {
     color: #111827;
 }
 
-.item-todo button {
+.todo-action-btn {
     border: none;
     background: transparent;
     color: #2563eb;
@@ -180,36 +178,13 @@ body {
     font-size: 14px;
 }
 
-.item-todo button:hover {
+.todo-action-btn:hover {
     text-decoration: underline;
     text-underline-offset: 4px;
 }
 
-.item-todo button + button {
+.todo-action-btn + .todo-action-btn {
     margin-left: 10px;
-}
-
-.delete {
-    width: 40px;
-    height: 36px;
-    border-radius: 10px;
-    background: #ef4444;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 8px 14px rgba(239, 68, 68, 0.22);
-    user-select: none;
-}
-
-.delete:hover {
-    filter: brightness(0.98);
-}
-
-.delete:active {
-    transform: translateY(1px);
 }
 
 .strike {
@@ -233,4 +208,54 @@ body {
 .todo-content {
     flex: 1;
     min-width: 0;
+}
+
+.todo-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.todo-icon-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 14px rgba(16, 24, 40, 0.12);
+    padding: 0;
+}
+
+.edit-btn {
+    background: #3b82f6;
+    color: #ffffff;
+}
+
+.delete-btn {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+.todo-icon-btn:hover {
+    filter: brightness(0.95);
+}
+
+.todo-icon-btn:active {
+    transform: translateY(1px);
+}
+
+.todo-icon-svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+.material-symbols-outlined {
+    font-size: 22px;
+    line-height: 1;
+    color: inherit;
 }
