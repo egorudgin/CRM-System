@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { validateTodoTitle } from '../helpers/validateTodoTitle.js';
+import CheckBox from '../ui-kit/CheckBox.jsx';
+import Button from '../ui-kit/Button.jsx';
+import IconButton from '../ui-kit/IconButton.jsx';
+import Input from '../ui-kit/Input.jsx';
 
 export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleEditTodo }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -44,37 +48,40 @@ export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleE
   return (
     <div className="item-todo">
       <div>
-        <label className="custom-checkbox">
-          <input type="checkbox" checked={todo.isDone} onChange={() => handleToggleTodo(todo.id)} />
-          <span className="checkmark"></span>
-        </label>
+        <CheckBox
+          checked={todo.isDone}
+          onChange={() => handleToggleTodo(todo.id)}
+          aria-label={todo.isDone ? 'Отметить как невыполненную' : 'Отметить как выполненную'}
+        />
       </div>
 
       <div className="todo-content">
         {isEditing ? (
           <>
-            <input value={editedTitle} type="text" onChange={handleTitleChange} />
+            <Input value={editedTitle} type="text" onChange={handleTitleChange} />
             {error && <div className="input-error">{error}</div>}
           </>
         ) : (
           <div className={todo.isDone ? 'item-text strike' : 'item-text'}>{todo.title}</div>
         )}
       </div>
+
       <div className="todo-actions">
         {isEditing ? (
           <>
-            <button className="todo-action-btn save-btn" onClick={handleSaveEdit}>
+            <Button className="todo-action-btn save-btn" onClick={handleSaveEdit} variant="ghost">
               Save
-            </button>
-            <button className="todo-action-btn cancel-btn" onClick={toggleEditing}>
+            </Button>
+            <Button className="todo-action-btn cancel-btn" onClick={toggleEditing} variant="ghost">
               Cancel
-            </button>
+            </Button>
           </>
         ) : (
           <>
-            <button
-              className="todo-icon-btn edit-btn"
+            <IconButton
+              className="edit-btn"
               onClick={toggleEditing}
+              variant="primary"
               aria-label="Редактировать задачу"
               title="Редактировать"
             >
@@ -84,17 +91,19 @@ export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleE
                   fill="currentColor"
                 />
               </svg>
-            </button>
-            <button
-              className="todo-icon-btn delete-btn"
+            </IconButton>
+
+            <IconButton
+              className="delete-btn"
               onClick={() => handleDeleteTodo(todo.id)}
+              variant="danger"
               aria-label="Удалить задачу"
               title="Удалить"
             >
               <span className="material-symbols-outlined" aria-hidden="true">
                 delete
               </span>
-            </button>
+            </IconButton>
           </>
         )}
       </div>

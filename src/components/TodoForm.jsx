@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { validateTodoTitle } from '../helpers/validateTodoTitle.js';
+import Input from '../ui-kit/Input.jsx';
+import Button from '../ui-kit/Button.jsx';
 
 export default function TodoForm({ handleAddTodo }) {
   const [userInput, setUserInput] = useState('');
@@ -38,7 +40,7 @@ export default function TodoForm({ handleAddTodo }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
+      <Input
         className="input-task"
         value={userInput}
         type="text"
@@ -49,7 +51,9 @@ export default function TodoForm({ handleAddTodo }) {
 
       {error && <div className="input-error">{error}</div>}
 
-      <button className="add-button">Add</button>
+      <Button className="add-button" type="submit" variant="primary">
+        Add
+      </Button>
     </form>
   );
 }

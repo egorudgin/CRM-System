@@ -1,24 +1,19 @@
+import Tab from '../ui-kit/Tab.jsx';
+
 export default function TodoFilters({ filteredTodos, setFilteredTodos, todosCount }) {
   return (
     <div>
-      <button
-        className={filteredTodos === 'all' ? 'active-tab' : ''}
-        onClick={() => setFilteredTodos('all')}
-      >
+      <Tab isActive={filteredTodos === 'all'} onClick={() => setFilteredTodos('all')}>
         Все ({todosCount.all})
-      </button>
-      <button
-        className={filteredTodos === 'inWork' ? 'active-tab' : ''}
-        onClick={() => setFilteredTodos('inWork')}
-      >
+      </Tab>
+
+      <Tab isActive={filteredTodos === 'inWork'} onClick={() => setFilteredTodos('inWork')}>
         В работе ({todosCount.inWork})
-      </button>
-      <button
-        className={filteredTodos === 'completed' ? 'active-tab' : ''}
-        onClick={() => setFilteredTodos('completed')}
-      >
+      </Tab>
+
+      <Tab isActive={filteredTodos === 'completed'} onClick={() => setFilteredTodos('completed')}>
         Сделано ({todosCount.completed})
-      </button>
+      </Tab>
     </div>
   );
 }

@@ -1,3 +1,22 @@
+:root {
+    --color-primary: #3b82f6;
+    --color-primary-hover: #2563eb;
+    --color-secondary: #6b7280;
+    --color-secondary-light: #f3f6fb;
+    --color-danger: #ef4444;
+    --color-danger-hover: #dc2626;
+    --color-text-main: #1f2937;
+    --color-text-muted: rgba(31, 41, 55, 0.55);
+    --color-text-disabled: rgba(31, 41, 55, 0.45);
+    --color-surface: #ffffff;
+    --color-bg-start: #f3f6fb;
+    --color-bg-end: #e9eef6;
+    --color-border: #d1d5db;
+    --shadow-primary: 0 10px 18px rgba(59, 130, 246, 0.22);
+    --shadow-card: 0 10px 18px rgba(16, 24, 40, 0.08);
+    --shadow-icon: 0 8px 14px rgba(16, 24, 40, 0.12);
+}
+
 * {
     box-sizing: border-box;
 }
@@ -5,8 +24,8 @@
 body {
     margin: 0;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    background: linear-gradient(#f3f6fb, #e9eef6);
-    color: #1f2937;
+    background: linear-gradient(var(--color-bg-start), var(--color-bg-end));
+    color: var(--color-text-main);
 }
 
 .App {
@@ -21,38 +40,66 @@ body {
     align-items: center;
     gap: 14px;
     margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.ui-input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: var(--color-text-main);
 }
 
 .input-task {
     flex: 1;
-    border: none;
     border-bottom: 2px solid rgba(31, 41, 55, 0.35);
     background: transparent;
     padding: 12px 6px;
-    font-size: 16px;
-    outline: none;
+    min-width: 0;
 }
 
 .input-task::placeholder {
     color: rgba(31, 41, 55, 0.45);
 }
 
-.add-button {
-    border: none;
-    background: #3b82f6;
-    color: #fff;
-    font-weight: 600;
-    padding: 11px 26px;
+.item-todo .ui-input {
+    flex: 1;
+    padding: 8px 10px;
     border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 10px 18px rgba(59, 130, 246, 0.22);
+    background: var(--color-secondary-light);
+    color: #111827;
 }
 
-.add-button:hover {
+.ui-button {
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.ui-button--primary {
+    background: var(--color-primary);
+    color: var(--color-surface);
+}
+
+.ui-button--ghost {
+    background: transparent;
+    color: var(--color-primary-hover);
+}
+
+.add-button {
+    padding: 11px 26px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-primary);
+}
+
+.ui-button:hover,
+.ui-icon-button:hover {
     filter: brightness(0.98);
 }
 
-.add-button:active {
+.ui-button:active,
+.ui-icon-button:active {
     transform: translateY(1px);
 }
 
@@ -63,18 +110,26 @@ body {
     margin: 10px 0 18px;
 }
 
-.App > div > button {
+.ui-tab {
     border: none;
     background: transparent;
     padding: 0;
     cursor: pointer;
     font-size: 18px;
     font-weight: 600;
-    color: rgba(31, 41, 55, 0.55);
+    color: var(--color-text-muted);
+    text-decoration: none;
 }
 
-.App > div > button:hover {
+.ui-tab:hover {
     color: rgba(59, 130, 246, 0.95);
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 2px;
+}
+
+.ui-tab--active {
+    color: var(--color-primary-hover) !important;
     text-decoration: underline;
     text-underline-offset: 6px;
     text-decoration-thickness: 2px;
@@ -87,9 +142,9 @@ body {
     width: 100%;
     padding: 14px 14px;
     margin: 12px 0;
-    background: #ffffff;
+    background: var(--color-surface);
     border-radius: 12px;
-    box-shadow: 0 10px 18px rgba(16, 24, 40, 0.08);
+    box-shadow: var(--shadow-card);
 }
 
 .item-todo > div:first-child {
@@ -97,7 +152,7 @@ body {
     align-items: center;
 }
 
-.custom-checkbox {
+.ui-checkbox {
     position: relative;
     display: inline-block;
     width: 20px;
@@ -105,45 +160,45 @@ body {
     cursor: pointer;
 }
 
-.custom-checkbox input {
+.ui-checkbox input {
     position: absolute;
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.checkmark {
+.ui-checkbox__mark {
     position: absolute;
     top: 0;
     left: 0;
     width: 20px;
     height: 20px;
-    border: 2px solid #d1d5db;
+    border: 2px solid var(--color-border);
     border-radius: 50%;
-    background: #fff;
+    background: var(--color-surface);
 }
 
-.custom-checkbox input:checked + .checkmark {
-    background: #3b82f6;
-    border-color: #3b82f6;
+.ui-checkbox input:checked + .ui-checkbox__mark {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
 }
 
-.checkmark::after {
+.ui-checkbox__mark::after {
     content: '';
     position: absolute;
     display: none;
 }
 
-.custom-checkbox input:checked + .checkmark::after {
+.ui-checkbox input:checked + .ui-checkbox__mark::after {
     display: block;
 }
 
-.checkmark::after {
+.ui-checkbox__mark::after {
     left: 6px;
     top: 2px;
     width: 5px;
     height: 10px;
-    border: solid white;
+    border: solid var(--color-surface);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
@@ -151,58 +206,22 @@ body {
 .item-text {
     flex: 1;
     font-size: 16px;
-    color: #1f2937;
+    color: var(--color-text-main);
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
 
-.item-todo input[type="text"] {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    padding: 8px 10px;
-    border-radius: 10px;
-    background: #f3f6fb;
-    color: #111827;
-}
-
-.todo-action-btn {
-    border: none;
-    background: transparent;
-    color: #2563eb;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 8px 6px;
-    font-size: 14px;
-}
-
-.todo-action-btn:hover {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-}
-
-.todo-action-btn + .todo-action-btn {
-    margin-left: 10px;
-}
-
 .strike {
     text-decoration: line-through;
-    color: rgba(31, 41, 55, 0.45);
-}
-
-.active-tab {
-    color: #2563eb !important;
-    text-decoration: underline;
-    text-underline-offset: 6px;
-    text-decoration-thickness: 2px;
+    color: var(--color-text-disabled);
 }
 
 .input-error {
     margin-top: 4px;
     font-size: 14px;
     color: #d32f2f;
+    width: 100%;
 }
 
 .todo-content {
@@ -217,7 +236,16 @@ body {
     flex-shrink: 0;
 }
 
-.todo-icon-btn {
+.todo-action-btn {
+    padding: 8px 6px;
+    font-size: 14px;
+}
+
+.todo-action-btn + .todo-action-btn {
+    margin-left: 10px;
+}
+
+.ui-icon-button {
     width: 44px;
     height: 44px;
     border: none;
@@ -226,26 +254,18 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 8px 14px rgba(16, 24, 40, 0.12);
+    box-shadow: var(--shadow-icon);
     padding: 0;
 }
 
-.edit-btn {
-    background: #3b82f6;
-    color: #ffffff;
+.ui-icon-button--primary {
+    background: var(--color-primary);
+    color: var(--color-surface);
 }
 
-.delete-btn {
-    background: #ef4444;
-    color: #ffffff;
-}
-
-.todo-icon-btn:hover {
-    filter: brightness(0.95);
-}
-
-.todo-icon-btn:active {
-    transform: translateY(1px);
+.ui-icon-button--danger {
+    background: var(--color-danger);
+    color: var(--color-surface);
 }
 
 .todo-icon-svg {
