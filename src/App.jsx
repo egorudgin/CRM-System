@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Todo from './components/Todo.jsx';
 import TodoForm from './components/TodoForm.jsx';
 import TodoFilters from './components/TodoFilters.jsx';
-import { getTodos, editTodo, createTodo, deleteTodo } from './api/http.js';
+import { getTodos } from './api/http.js';
 
 export default function App() {
   const [todos, setTodos] = useState([]);
@@ -12,19 +12,6 @@ export default function App() {
     completed: 0,
     inWork: 0,
   });
-
-  const handleAddTodo = async (userInput) => {
-    try {
-      await createTodo(userInput);
-      const response = await getTodos(filteredTodos);
-      setTodos(response.todos);
-      setTodosCount(response.todosCount);
-      return true;
-    } catch (error) {
-      alert('Ошибка при добавлении задачи!');
-      return false;
-    }
-  };
 
   useEffect(() => {
     async function fetchTodos() {
@@ -38,65 +25,28 @@ export default function App() {
         );
       }
     }
+
     fetchTodos();
   }, [filteredTodos]);
 
-  const handleDeleteTodo = async (id) => {
-    try {
-      await deleteTodo(id);
-      const response = await getTodos(filteredTodos);
-      setTodos(response.todos);
-      setTodosCount(response.todosCount);
-    } catch (error) {
-      alert('Ошибка при удалении задачи!');
-    }
-  };
-
-  const handleEditTodo = async (id, title) => {
-    const currentTask = todos.find((todo) => todo.id === id);
-    if (!currentTask) return false;
-
-    try {
-      const editedTask = await editTodo(id, { title });
-      if (!editedTask) return false;
-      setTodos((prev) => prev.map((todo) => (todo.id === id ? editedTask : todo)));
-      return true;
-    } catch (error) {
-      alert('Ошибка при редактировании задачи!');
-      return false;
-    }
-  };
-
-  const handleToggleTodo = async (id) => {
-    const currentTodo = todos.find((todo) => todo.id === id);
-    if (!currentTodo) return;
-    const nextIsDone = !currentTodo.isDone;
-    try {
-      await editTodo(id, { isDone: nextIsDone });
-      const response = await getTodos(filteredTodos);
-      setTodos(response.todos);
-      setTodosCount(response.todosCount);
-    } catch (error) {
-      alert('Ошибка при изменени статуса задачи!');
-    }
-  };
-
   return (
     <div className="App">
-      <TodoForm handleAddTodo={handleAddTodo} />
+      <TodoForm filteredTodos={filteredTodos} setTodos={setTodos} setTodosCount={setTodosCount} />
+
       <TodoFilters
         filteredTodos={filteredTodos}
         setFilteredTodos={setFilteredTodos}
         todosCount={todosCount}
       />
+
       {todos.map((todo) => {
         return (
           <Todo
             key={todo.id}
             todo={todo}
-            handleToggleTodo={handleToggleTodo}
-            handleEditTodo={handleEditTodo}
-            handleDeleteTodo={handleDeleteTodo}
+            filteredTodos={filteredTodos}
+            setTodos={setTodos}
+            setTodosCount={setTodosCount}
           />
         );
       })}

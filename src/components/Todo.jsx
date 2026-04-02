@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { validateTodoTitle } from '../helpers/validateTodoTitle.js';
+import { getTodos, editTodo, deleteTodo } from '../api/http.js';
 import CheckBox from '../ui-kit/CheckBox.jsx';
 import Button from '../ui-kit/Button.jsx';
 import IconButton from '../ui-kit/IconButton.jsx';
 import Input from '../ui-kit/Input.jsx';
 
-export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleEditTodo }) {
+export default function Todo({ todo, filteredTodos, setTodos, setTodosCount }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(todo.title);
   const [error, setError] = useState('');
@@ -25,23 +26,56 @@ export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleE
       return;
     }
 
-    const errorMessage = validateTodoTitle(value);
-    setError(errorMessage);
+    const validatedError = validateTodoTitle(value);
+    setError(validatedError);
   };
 
   const handleSaveEdit = async () => {
-    const errorMessage = validateTodoTitle(editedTitle);
+    const validatedError = validateTodoTitle(editedTitle);
 
-    if (errorMessage) {
-      setError(errorMessage);
+    if (validatedError) {
+      setError(validatedError);
       return;
     }
 
-    const isSaved = await handleEditTodo(todo.id, editedTitle.trim());
+    try {
+      const editedTask = await editTodo(todo.id, { title: editedTitle.trim() });
 
-    if (isSaved) {
+      if (!editedTask) {
+        return;
+      }
+
+      setTodos((prev) =>
+        prev.map((currentTodo) => (currentTodo.id === todo.id ? editedTask : currentTodo)),
+      );
       setIsEditing(false);
       setError('');
+    } catch (error) {
+      alert('Ошибка при редактировании задачи!');
+    }
+  };
+
+  const handleDeleteTodo = async () => {
+    try {
+      await deleteTodo(todo.id);
+      const response = await getTodos(filteredTodos);
+      setTodos(response.todos);
+      setTodosCount(response.todosCount);
+    } catch (error) {
+      alert('Ошибка при удалении задачи!');
+    }
+  };
+
+  const handleToggleTodo = async () => {
+    const nextIsDone = !todo.isDone;
+
+    try {
+      await editTodo(todo.id, { isDone: nextIsDone });
+      const response = await getTodos(filteredTodos);
+      setTodos(response.todos);
+      setTodosCount(response.todosCount);
+    } catch (error) {
+      alert('Ошибка при изменени статуса задачи!');
     }
   };
 
@@ -50,7 +84,7 @@ export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleE
       <div>
         <CheckBox
           checked={todo.isDone}
-          onChange={() => handleToggleTodo(todo.id)}
+          onChange={handleToggleTodo}
           aria-label={todo.isDone ? 'Отметить как невыполненную' : 'Отметить как выполненную'}
         />
       </div>
@@ -95,7 +129,7 @@ export default function Todo({ todo, handleToggleTodo, handleDeleteTodo, handleE
 
             <IconButton
               className="delete-btn"
-              onClick={() => handleDeleteTodo(todo.id)}
+              onClick={handleDeleteTodo}
               variant="danger"
               aria-label="Удалить задачу"
               title="Удалить"

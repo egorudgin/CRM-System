@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { validateTodoTitle } from '../helpers/validateTodoTitle.js';
+import { getTodos, createTodo } from '../api/http.js';
 import Input from '../ui-kit/Input.jsx';
 import Button from '../ui-kit/Button.jsx';
 
-export default function TodoForm({ handleAddTodo }) {
+export default function TodoForm({ filteredTodos, setTodos, setTodosCount }) {
   const [userInput, setUserInput] = useState('');
   const [error, setError] = useState('');
 
@@ -16,30 +17,34 @@ export default function TodoForm({ handleAddTodo }) {
       return;
     }
 
-    const errorMessage = validateTodoTitle(value);
-    setError(errorMessage);
+    const validatedError = validateTodoTitle(value);
+    setError(validatedError);
   };
 
-  const handleSubmit = async (e) => {
+  const handleAddTodo = async (e) => {
     e.preventDefault();
 
-    const errorMessage = validateTodoTitle(userInput);
+    const validatedError = validateTodoTitle(userInput);
 
-    if (errorMessage) {
-      setError(errorMessage);
+    if (validatedError) {
+      setError(validatedError);
       return;
     }
 
-    const isCreated = await handleAddTodo(userInput.trim());
-
-    if (isCreated) {
+    try {
+      await createTodo(userInput.trim());
+      const response = await getTodos(filteredTodos);
+      setTodos(response.todos);
+      setTodosCount(response.todosCount);
       setUserInput('');
       setError('');
+    } catch (error) {
+      alert('Ошибка при добавлении задачи!');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleAddTodo}>
       <Input
         className="input-task"
         value={userInput}
