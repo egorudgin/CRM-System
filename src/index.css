@@ -1,68 +1,281 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    --color-primary: #3b82f6;
+    --color-primary-hover: #2563eb;
+    --color-secondary: #6b7280;
+    --color-secondary-light: #f3f6fb;
+    --color-danger: #ef4444;
+    --color-danger-hover: #dc2626;
+    --color-text-main: #1f2937;
+    --color-text-muted: rgba(31, 41, 55, 0.55);
+    --color-text-disabled: rgba(31, 41, 55, 0.45);
+    --color-surface: #ffffff;
+    --color-bg-start: #f3f6fb;
+    --color-bg-end: #e9eef6;
+    --color-border: #d1d5db;
+    --shadow-primary: 0 10px 18px rgba(59, 130, 246, 0.22);
+    --shadow-card: 0 10px 18px rgba(16, 24, 40, 0.08);
+    --shadow-icon: 0 8px 14px rgba(16, 24, 40, 0.12);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+* {
+    box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: linear-gradient(var(--color-bg-start), var(--color-bg-end));
+    color: var(--color-text-main);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.App {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 28px 18px 40px;
+    text-align: left;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.App form {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.ui-input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: var(--color-text-main);
+}
+
+.input-task {
+    flex: 1;
+    border-bottom: 2px solid rgba(31, 41, 55, 0.35);
+    background: transparent;
+    padding: 12px 6px;
+    min-width: 0;
+}
+
+.input-task::placeholder {
+    color: rgba(31, 41, 55, 0.45);
+}
+
+.item-todo .ui-input {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: var(--color-secondary-light);
+    color: #111827;
+}
+
+.ui-button {
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.ui-button--primary {
+    background: var(--color-primary);
+    color: var(--color-surface);
+}
+
+.ui-button--ghost {
+    background: transparent;
+    color: var(--color-primary-hover);
+}
+
+.add-button {
+    padding: 11px 26px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-primary);
+}
+
+.ui-button:hover,
+.ui-icon-button:hover {
+    filter: brightness(0.98);
+}
+
+.ui-button:active,
+.ui-icon-button:active {
+    transform: translateY(1px);
+}
+
+.App > div {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    margin: 10px 0 18px;
+}
+
+.ui-tab {
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-decoration: none;
+}
+
+.ui-tab:hover {
+    color: rgba(59, 130, 246, 0.95);
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 2px;
+}
+
+.ui-tab--active {
+    color: var(--color-primary-hover) !important;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 2px;
+}
+
+.item-todo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 14px;
+    margin: 12px 0;
+    background: var(--color-surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow-card);
+}
+
+.item-todo > div:first-child {
+    display: flex;
+    align-items: center;
+}
+
+.ui-checkbox {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.ui-checkbox input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ui-checkbox__mark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--color-border);
+    border-radius: 50%;
+    background: var(--color-surface);
+}
+
+.ui-checkbox input:checked + .ui-checkbox__mark {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.ui-checkbox__mark::after {
+    content: '';
+    position: absolute;
+    display: none;
+}
+
+.ui-checkbox input:checked + .ui-checkbox__mark::after {
+    display: block;
+}
+
+.ui-checkbox__mark::after {
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid var(--color-surface);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.item-text {
+    flex: 1;
+    font-size: 16px;
+    color: var(--color-text-main);
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.strike {
+    text-decoration: line-through;
+    color: var(--color-text-disabled);
+}
+
+.input-error {
+    margin-top: 4px;
+    font-size: 14px;
+    color: #d32f2f;
+    width: 100%;
+}
+
+.todo-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.todo-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.todo-action-btn {
+    padding: 8px 6px;
+    font-size: 14px;
+}
+
+.todo-action-btn + .todo-action-btn {
+    margin-left: 10px;
+}
+
+.ui-icon-button {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-icon);
+    padding: 0;
+}
+
+.ui-icon-button--primary {
+    background: var(--color-primary);
+    color: var(--color-surface);
+}
+
+.ui-icon-button--danger {
+    background: var(--color-danger);
+    color: var(--color-surface);
+}
+
+.todo-icon-svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+.material-symbols-outlined {
+    font-size: 22px;
+    line-height: 1;
+    color: inherit;
 }
