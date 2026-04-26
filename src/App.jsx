@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import Todo from './components/Todo.jsx';
+import TodoForm from './components/TodoForm.jsx';
+import TodoFilters from './components/TodoFilters.jsx';
+import { getTodos } from './api/http.js';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [todos, setTodos] = useState([]);
+  const [filteredTodos, setFilteredTodos] = useState('all');
+  const [todosCount, setTodosCount] = useState({
+    all: 0,
+    completed: 0,
+    inWork: 0,
+  });
+
+  useEffect(() => {
+    async function fetchTodos() {
+      try {
+        const response = await getTodos(filteredTodos);
+        setTodos(response.todos);
+        setTodosCount(response.todosCount);
+      } catch (error) {
+        alert(
+          'Ошибка обновления списка задач. Проверьте интернет-соединение и перезагрузите страницу',
+        );
+      }
+    }
+
+    fetchTodos();
+  }, [filteredTodos]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="App">
+      <TodoForm filteredTodos={filteredTodos} setTodos={setTodos} setTodosCount={setTodosCount} />
 
-export default App
+      <TodoFilters
+        filteredTodos={filteredTodos}
+        setFilteredTodos={setFilteredTodos}
+        todosCount={todosCount}
+      />
+
+      {todos.map((todo) => {
+        return (
+          <Todo
+            key={todo.id}
+            todo={todo}
+            filteredTodos={filteredTodos}
+            setTodos={setTodos}
+            setTodosCount={setTodosCount}
+          />
+        );
+      })}
+    </div>
+  );
+}
