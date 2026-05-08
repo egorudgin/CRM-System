@@ -1,10 +1,14 @@
+type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: 'primary' | 'danger';
+};
+
 export default function IconButton({
   children,
   type = 'button',
   variant = 'primary',
   className = '',
   ...props
-}) {
+}: IconButtonProps) {
   return (
     <button
       type={type}

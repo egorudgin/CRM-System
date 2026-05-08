@@ -1,6 +1,17 @@
-import Tab from '../ui-kit/Tab.jsx';
+import Tab from '..//ui-kit/Tab.js';
+import type { TodosCount, TodoFilter } from '../types/typesTodo.js';
 
-export default function TodoFilters({ filteredTodos, setFilteredTodos, todosCount }) {
+type TodoFiltersProps = {
+  filteredTodos: TodoFilter;
+  setFilteredTodos: React.Dispatch<React.SetStateAction<TodoFilter>>;
+  todosCount: TodosCount;
+};
+
+export default function TodoFilters({
+  filteredTodos,
+  setFilteredTodos,
+  todosCount,
+}: TodoFiltersProps) {
   return (
     <div>
       <Tab isActive={filteredTodos === 'all'} onClick={() => setFilteredTodos('all')}>

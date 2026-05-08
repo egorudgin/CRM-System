@@ -1,4 +1,11 @@
-export async function getTodos(filter = 'all') {
+import type {
+  TodoTitle,
+  TodoFilter,
+  GetTodosResponse,
+  EditTodoChanges,
+} from '../types/typesTodo.js';
+
+export async function getTodos(filter: TodoFilter = 'all'): Promise<GetTodosResponse> {
   const response = await fetch(`https://easydev.club/api/v1/todos?filter=${filter}`);
 
   if (!response.ok) {
@@ -13,7 +20,7 @@ export async function getTodos(filter = 'all') {
   };
 }
 
-export async function createTodo(title) {
+export async function createTodo(title: string): Promise<TodoTitle> {
   const response = await fetch('https://easydev.club/api/v1/todos', {
     method: 'POST',
     headers: {
@@ -32,7 +39,7 @@ export async function createTodo(title) {
   return await response.json();
 }
 
-export async function editTodo(id, changes) {
+export async function editTodo(id: number, changes: EditTodoChanges): Promise<TodoTitle> {
   const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
     method: 'PUT',
     headers: {
@@ -48,7 +55,7 @@ export async function editTodo(id, changes) {
   return await response.json();
 }
 
-export async function deleteTodo(id) {
+export async function deleteTodo(id: number): Promise<void> {
   const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
     method: 'DELETE',
   });
@@ -56,6 +63,4 @@ export async function deleteTodo(id) {
   if (!response.ok) {
     throw new Error('Ошибка при удалении');
   }
-
-  return;
 }

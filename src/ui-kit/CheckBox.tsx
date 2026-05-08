@@ -1,4 +1,6 @@
-export default function CheckBox({ checked, onChange, className = '', ...props }) {
+type CheckBoxProps = React.InputHTMLAttributes<HTMLInputElement>;
+
+export default function CheckBox({ checked, onChange, className = '', ...props }: CheckBoxProps) {
   return (
     <label className={`ui-checkbox ${className}`.trim()}>
       <input type="checkbox" checked={checked} onChange={onChange} {...props} />
