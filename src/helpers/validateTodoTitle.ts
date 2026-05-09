@@ -1,4 +1,4 @@
-export function validateTodoTitle(title) {
+export function validateTodoTitle(title: string): string {
   const trimmedTitle = title.trim();
 
   if (trimmedTitle.length < 2) {

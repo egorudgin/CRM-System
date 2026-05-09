@@ -1,23 +1,31 @@
 import { useState } from 'react';
 import { validateTodoTitle } from '../helpers/validateTodoTitle.js';
 import { getTodos, editTodo, deleteTodo } from '../api/http.js';
-import CheckBox from '../ui-kit/CheckBox.jsx';
-import Button from '../ui-kit/Button.jsx';
-import IconButton from '../ui-kit/IconButton.jsx';
-import Input from '../ui-kit/Input.jsx';
+import CheckBox from '../ui-kit/CheckBox.js';
+import Button from '../ui-kit/Button.js';
+import IconButton from '../ui-kit/IconButton.js';
+import Input from '../ui-kit/Input.js';
+import type { TodosCount, TodoFilter, TodoTitle } from '../types/typesTodo.js';
 
-export default function Todo({ todo, filteredTodos, setTodos, setTodosCount }) {
+type TodoProps = {
+  todo: TodoTitle;
+  filteredTodos: TodoFilter;
+  setTodos: React.Dispatch<React.SetStateAction<TodoTitle[]>>;
+  setTodosCount: React.Dispatch<React.SetStateAction<TodosCount>>;
+};
+
+export default function Todo({ todo, filteredTodos, setTodos, setTodosCount }: TodoProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(todo.title);
   const [error, setError] = useState('');
 
-  const toggleEditing = () => {
+  const toggleEditing = (): void => {
     setIsEditing(!isEditing);
     setEditedTitle(todo.title);
     setError('');
   };
 
-  const handleTitleChange = (e) => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEditedTitle(value);
 
@@ -30,7 +38,7 @@ export default function Todo({ todo, filteredTodos, setTodos, setTodosCount }) {
     setError(validatedError);
   };
 
-  const handleSaveEdit = async () => {
+  const handleSaveEdit = async (): Promise<void> => {
     const validatedError = validateTodoTitle(editedTitle);
 
     if (validatedError) {

@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
-import Todo from './components/Todo.jsx';
-import TodoForm from './components/TodoForm.jsx';
-import TodoFilters from './components/TodoFilters.jsx';
+import Todo from './components/Todo.js';
+import TodoForm from './components/TodoForm.js';
+import TodoFilters from './components/TodoFilters.js';
 import { getTodos } from './api/http.js';
+import type { TodoTitle, TodoFilter, TodosCount } from './types/typesTodo.js';
 
 export default function App() {
-  const [todos, setTodos] = useState([]);
-  const [filteredTodos, setFilteredTodos] = useState('all');
-  const [todosCount, setTodosCount] = useState({
+  const [todos, setTodos] = useState<TodoTitle[]>([]);
+  const [filteredTodos, setFilteredTodos] = useState<TodoFilter>('all');
+  const [todosCount, setTodosCount] = useState<TodosCount>({
     all: 0,
     completed: 0,
     inWork: 0,
   });
 
   useEffect(() => {
-    async function fetchTodos() {
+    async function fetchTodos(): Promise<void> {
       try {
         const response = await getTodos(filteredTodos);
         setTodos(response.todos);
