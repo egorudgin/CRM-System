@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { validateTodoTitle } from '../helpers/validateTodoTitle.js';
 import { getTodos, editTodo, deleteTodo } from '../api/http.js';
-import CheckBox from '../ui-kit/CheckBox.js';
-import Button from '../ui-kit/Button.js';
-import IconButton from '../ui-kit/IconButton.js';
-import Input from '../ui-kit/Input.js';
+import { Button, Input, Checkbox } from 'antd';
 import type { TodosCount, TodoFilter, TodoTitle } from '../types/typesTodo.js';
+import { DeleteOutlined, FormOutlined } from '@ant-design/icons';
 
 type TodoProps = {
   todo: TodoTitle;
@@ -90,7 +88,7 @@ export default function Todo({ todo, filteredTodos, setTodos, setTodosCount }: T
   return (
     <div className="item-todo">
       <div>
-        <CheckBox
+        <Checkbox
           checked={todo.isDone}
           onChange={handleToggleTodo}
           aria-label={todo.isDone ? 'Отметить как невыполненную' : 'Отметить как выполненную'}
@@ -100,7 +98,13 @@ export default function Todo({ todo, filteredTodos, setTodos, setTodosCount }: T
       <div className="todo-content">
         {isEditing ? (
           <>
-            <Input value={editedTitle} type="text" onChange={handleTitleChange} />
+            <Input
+              value={editedTitle}
+              type="text"
+              onChange={handleTitleChange}
+              status={error ? 'error' : ''}
+              placeholder="Напишите задачу"
+            />
             {error && <div className="input-error">{error}</div>}
           </>
         ) : (
@@ -111,41 +115,30 @@ export default function Todo({ todo, filteredTodos, setTodos, setTodosCount }: T
       <div className="todo-actions">
         {isEditing ? (
           <>
-            <Button className="todo-action-btn save-btn" onClick={handleSaveEdit} variant="ghost">
+            <Button onClick={handleSaveEdit} type="primary">
               Save
             </Button>
-            <Button className="todo-action-btn cancel-btn" onClick={toggleEditing} variant="ghost">
-              Cancel
-            </Button>
+            <Button onClick={toggleEditing}>Cancel</Button>
           </>
         ) : (
           <>
-            <IconButton
-              className="edit-btn"
+            <Button
+              icon={<FormOutlined />}
               onClick={toggleEditing}
-              variant="primary"
+              type="primary"
+              size="large"
               aria-label="Редактировать задачу"
               title="Редактировать"
-            >
-              <svg viewBox="0 0 24 24" className="todo-icon-svg" aria-hidden="true">
-                <path
-                  d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm2.92 2.33H5v-.92l8.06-8.06.92.92L5.92 19.58zM20.71 7.04a1.003 1.003 0 0 0 0-1.42L18.37 3.29a1.003 1.003 0 0 0-1.42 0l-1.13 1.13 3.75 3.75 1.14-1.13z"
-                  fill="currentColor"
-                />
-              </svg>
-            </IconButton>
-
-            <IconButton
-              className="delete-btn"
+            ></Button>
+            <Button
+              icon={<DeleteOutlined />}
               onClick={handleDeleteTodo}
-              variant="danger"
+              type="primary"
+              danger
+              size="large"
               aria-label="Удалить задачу"
               title="Удалить"
-            >
-              <span className="material-symbols-outlined" aria-hidden="true">
-                delete
-              </span>
-            </IconButton>
+            ></Button>
           </>
         )}
       </div>

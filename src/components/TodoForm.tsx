@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { validateTodoTitle } from '../helpers/validateTodoTitle.js';
 import { getTodos, createTodo } from '../api/http.js';
-import Input from '../ui-kit/Input.js';
-import Button from '../ui-kit/Button.js';
+import { Button, Input, Space } from 'antd';
 import type { TodosCount, TodoFilter, TodoTitle } from '../types/typesTodo.js';
 
 type TodoFormProps = {
@@ -52,20 +51,21 @@ export default function TodoForm({ filteredTodos, setTodos, setTodosCount }: Tod
 
   return (
     <form onSubmit={handleAddTodo}>
-      <Input
-        className="input-task"
-        value={userInput}
-        type="text"
-        onChange={handleChange}
-        placeholder="Task to be done..."
-        required
-      />
+      <Space.Compact style={{ width: '100%' }}>
+        <Input
+          value={userInput}
+          type="text"
+          onChange={handleChange}
+          status={error ? 'error' : ''}
+          placeholder="Task to be done..."
+          required
+        />
 
+        <Button className="add-button" type="primary" htmlType="submit">
+          Add
+        </Button>
+      </Space.Compact>
       {error && <div className="input-error">{error}</div>}
-
-      <Button className="add-button" type="submit" variant="primary">
-        Add
-      </Button>
     </form>
   );
 }

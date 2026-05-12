@@ -43,25 +43,6 @@ body {
     flex-wrap: wrap;
 }
 
-.ui-input {
-    border: none;
-    outline: none;
-    font-size: 16px;
-    color: var(--color-text-main);
-}
-
-.input-task {
-    flex: 1;
-    border-bottom: 2px solid rgba(31, 41, 55, 0.35);
-    background: transparent;
-    padding: 12px 6px;
-    min-width: 0;
-}
-
-.input-task::placeholder {
-    color: rgba(31, 41, 55, 0.45);
-}
-
 .item-todo .ui-input {
     flex: 1;
     padding: 8px 10px;
@@ -70,37 +51,10 @@ body {
     color: #111827;
 }
 
-.ui-button {
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    transition: filter 0.15s ease, transform 0.15s ease;
-}
-
-.ui-button--primary {
-    background: var(--color-primary);
-    color: var(--color-surface);
-}
-
-.ui-button--ghost {
-    background: transparent;
-    color: var(--color-primary-hover);
-}
-
 .add-button {
     padding: 11px 26px;
     border-radius: 10px;
     box-shadow: var(--shadow-primary);
-}
-
-.ui-button:hover,
-.ui-icon-button:hover {
-    filter: brightness(0.98);
-}
-
-.ui-button:active,
-.ui-icon-button:active {
-    transform: translateY(1px);
 }
 
 .App > div {
@@ -152,57 +106,6 @@ body {
     align-items: center;
 }
 
-.ui-checkbox {
-    position: relative;
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-}
-
-.ui-checkbox input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.ui-checkbox__mark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--color-border);
-    border-radius: 50%;
-    background: var(--color-surface);
-}
-
-.ui-checkbox input:checked + .ui-checkbox__mark {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-}
-
-.ui-checkbox__mark::after {
-    content: '';
-    position: absolute;
-    display: none;
-}
-
-.ui-checkbox input:checked + .ui-checkbox__mark::after {
-    display: block;
-}
-
-.ui-checkbox__mark::after {
-    left: 6px;
-    top: 2px;
-    width: 5px;
-    height: 10px;
-    border: solid var(--color-surface);
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
-
 .item-text {
     flex: 1;
     font-size: 16px;
@@ -234,15 +137,6 @@ body {
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
-}
-
-.todo-action-btn {
-    padding: 8px 6px;
-    font-size: 14px;
-}
-
-.todo-action-btn + .todo-action-btn {
-    margin-left: 10px;
 }
 
 .ui-icon-button {
