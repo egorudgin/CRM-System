@@ -43,14 +43,6 @@ body {
     flex-wrap: wrap;
 }
 
-.item-todo .ui-input {
-    flex: 1;
-    padding: 8px 10px;
-    border-radius: 10px;
-    background: var(--color-secondary-light);
-    color: #111827;
-}
-
 .add-button {
     padding: 11px 26px;
     border-radius: 10px;
@@ -62,31 +54,6 @@ body {
     gap: 18px;
     align-items: center;
     margin: 10px 0 18px;
-}
-
-.ui-tab {
-    border: none;
-    background: transparent;
-    padding: 0;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--color-text-muted);
-    text-decoration: none;
-}
-
-.ui-tab:hover {
-    color: rgba(59, 130, 246, 0.95);
-    text-decoration: underline;
-    text-underline-offset: 6px;
-    text-decoration-thickness: 2px;
-}
-
-.ui-tab--active {
-    color: var(--color-primary-hover) !important;
-    text-decoration: underline;
-    text-underline-offset: 6px;
-    text-decoration-thickness: 2px;
 }
 
 .item-todo {
@@ -120,13 +87,6 @@ body {
     color: var(--color-text-disabled);
 }
 
-.input-error {
-    margin-top: 4px;
-    font-size: 14px;
-    color: #d32f2f;
-    width: 100%;
-}
-
 .todo-content {
     flex: 1;
     min-width: 0;
@@ -137,39 +97,4 @@ body {
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
-}
-
-.ui-icon-button {
-    width: 44px;
-    height: 44px;
-    border: none;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: var(--shadow-icon);
-    padding: 0;
-}
-
-.ui-icon-button--primary {
-    background: var(--color-primary);
-    color: var(--color-surface);
-}
-
-.ui-icon-button--danger {
-    background: var(--color-danger);
-    color: var(--color-surface);
-}
-
-.todo-icon-svg {
-    width: 20px;
-    height: 20px;
-    display: block;
-}
-
-.material-symbols-outlined {
-    font-size: 22px;
-    line-height: 1;
-    color: inherit;
 }

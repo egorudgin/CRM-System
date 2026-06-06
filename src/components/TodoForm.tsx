@@ -1,7 +1,5 @@
-import { useState } from 'react';
-import { validateTodoTitle } from '../helpers/validateTodoTitle.js';
 import { getTodos, createTodo } from '../api/http.js';
-import { Button, Input, Space } from 'antd';
+import { Button, Input, Space, Form } from 'antd';
 import type { TodosCount, TodoFilter, TodoTitle } from '../types/typesTodo.js';
 
 type TodoFormProps = {
@@ -10,62 +8,66 @@ type TodoFormProps = {
   setTodosCount: React.Dispatch<React.SetStateAction<TodosCount>>;
 };
 
+type FieldType = {
+  title: string;
+};
+
 export default function TodoForm({ filteredTodos, setTodos, setTodosCount }: TodoFormProps) {
-  const [userInput, setUserInput] = useState('');
-  const [error, setError] = useState('');
+  const [form] = Form.useForm<FieldType>();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value;
-    setUserInput(value);
-
-    if (value.trim().length === 0) {
-      setError('');
-      return;
-    }
-
-    const validatedError = validateTodoTitle(value);
-    setError(validatedError);
-  };
-
-  const handleAddTodo = async (e: React.SyntheticEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
-
-    const validatedError = validateTodoTitle(userInput);
-
-    if (validatedError) {
-      setError(validatedError);
-      return;
-    }
-
+  const handleAddTodo = async (values: FieldType): Promise<void> => {
     try {
-      await createTodo(userInput.trim());
+      await createTodo(values.title.trim());
+
       const response = await getTodos(filteredTodos);
+
       setTodos(response.todos);
       setTodosCount(response.todosCount);
-      setUserInput('');
-      setError('');
+
+      form.resetFields();
     } catch (error) {
       alert('Ошибка при добавлении задачи!');
     }
   };
 
   return (
-    <form onSubmit={handleAddTodo}>
+    <Form form={form} onFinish={handleAddTodo}>
       <Space.Compact style={{ width: '100%' }}>
-        <Input
-          value={userInput}
-          type="text"
-          onChange={handleChange}
-          status={error ? 'error' : ''}
-          placeholder="Task to be done..."
-          required
-        />
+        <Form.Item<FieldType>
+          name="title"
+          style={{ flex: 1, marginBottom: 0 }}
+          rules={[
+            {
+              required: true,
+              message: 'Введите свою задачу!',
+            },
+            {
+              validator(_, value) {
+                if (!value) {
+                  return Promise.resolve();
+                }
+                const trimmedTitle = value.trim() || '';
+
+                if (trimmedTitle.length < 2) {
+                  return Promise.reject(new Error('Минимум 2 символа'));
+                }
+
+                if (trimmedTitle.length > 64) {
+                  return Promise.reject(new Error('Максимум 64 символа'));
+                }
+
+                return Promise.resolve();
+              },
+            },
+          ]}
+        >
+          <Input placeholder="Task to be done..." />
+        </Form.Item>
 
         <Button className="add-button" type="primary" htmlType="submit">
           Add
         </Button>
       </Space.Compact>
-      {error && <div className="input-error">{error}</div>}
-    </form>
+    </Form>
   );
 }
