@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import type {
   TodoTitle,
   TodoFilter,
@@ -6,13 +8,13 @@ import type {
 } from '../types/typesTodo.js';
 
 export async function getTodos(filter: TodoFilter = 'all'): Promise<GetTodosResponse> {
-  const response = await fetch(`https://easydev.club/api/v1/todos?filter=${filter}`);
+  const response = await axios.get('https://easydev.club/api/v1/todos', {
+    params: {
+      filter,
+    },
+  });
 
-  if (!response.ok) {
-    throw new Error('Ошибка при получении данных');
-  }
-
-  const resData = await response.json();
+  const resData = response.data;
 
   return {
     todos: resData.data,
@@ -21,46 +23,20 @@ export async function getTodos(filter: TodoFilter = 'all'): Promise<GetTodosResp
 }
 
 export async function createTodo(title: string): Promise<TodoTitle> {
-  const response = await fetch('https://easydev.club/api/v1/todos', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      title,
-      isDone: false,
-    }),
+  const response = await axios.post('https://easydev.club/api/v1/todos', {
+    title,
+    isDone: false,
   });
 
-  if (!response.ok) {
-    throw new Error('Ошибка при создании');
-  }
-
-  return await response.json();
+  return response.data;
 }
 
 export async function editTodo(id: number, changes: EditTodoChanges): Promise<TodoTitle> {
-  const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(changes),
-  });
+  const response = await axios.put(`https://easydev.club/api/v1/todos/${id}`, changes);
 
-  if (!response.ok) {
-    throw new Error('Ошибка при редактировании');
-  }
-
-  return await response.json();
+  return response.data;
 }
 
 export async function deleteTodo(id: number): Promise<void> {
-  const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
-    method: 'DELETE',
-  });
-
-  if (!response.ok) {
-    throw new Error('Ошибка при удалении');
-  }
+  await axios.delete(`https://easydev.club/api/v1/todos/${id}`);
 }
