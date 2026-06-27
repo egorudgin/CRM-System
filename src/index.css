@@ -98,3 +98,42 @@ body {
     gap: 10px;
     flex-shrink: 0;
 }
+
+.app-layout {
+    min-height: 100vh;
+    display: flex;
+}
+
+.sidebar {
+    width: 220px;
+    padding: 24px 16px;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nav-link {
+    display: block;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: var(--color-text-main);
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    background: var(--color-secondary-light);
+}
+
+.nav-link.active {
+    background: var(--color-primary);
+    color: white;
+}
+
+.App {
+    flex: 1;
+}
