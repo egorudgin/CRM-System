@@ -1,64 +1,82 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { Empty, List, message, Typography } from 'antd';
+
 import Todo from '../components/Todo.js';
 import TodoForm from '../components/TodoForm.js';
 import TodoFilters from '../components/TodoFilters.js';
 import { getTodos } from '../api/http.js';
-import type { TodoTitle, TodoFilter, TodosCount } from '../types/typesTodo.js';
+
+import type { TodoFilter, TodosCount, TodoTitle } from '../types/typesTodo.js';
 
 export default function TodoPage() {
   const [todos, setTodos] = useState<TodoTitle[]>([]);
   const [filteredTodos, setFilteredTodos] = useState<TodoFilter>('all');
+
   const [todosCount, setTodosCount] = useState<TodosCount>({
     all: 0,
     completed: 0,
     inWork: 0,
   });
 
-  useEffect(() => {
-    async function fetchTodos(): Promise<void> {
-      try {
-        const response = await getTodos(filteredTodos);
-        setTodos(response.todos);
-        setTodosCount(response.todosCount);
-      } catch (error) {
-        alert(
-          'Ошибка обновления списка задач. Проверьте интернет-соединение и перезагрузите страницу',
-        );
-      }
+  const refreshTodos = useCallback(async (): Promise<void> => {
+    try {
+      const response = await getTodos(filteredTodos);
+
+      setTodos(response.todos);
+      setTodosCount(response.todosCount);
+    } catch {
+      message.error({
+        content: 'Не удалось загрузить задачи. Проверьте интернет-соединение',
+        key: 'todos-loading-error',
+      });
     }
+  }, [filteredTodos]);
 
-    fetchTodos();
+  const handleFilterChange = useCallback((filter: TodoFilter): void => {
+    setFilteredTodos(filter);
+  }, []);
 
-    const intervalId = setInterval(() => {
-      fetchTodos();
+  useEffect(() => {
+    void refreshTodos();
+
+    const intervalId = window.setInterval(() => {
+      void refreshTodos();
     }, 5000);
 
     return () => {
-      clearInterval(intervalId);
+      window.clearInterval(intervalId);
     };
-  }, [filteredTodos]);
+  }, [refreshTodos]);
 
   return (
     <>
-      <TodoForm filteredTodos={filteredTodos} setTodos={setTodos} setTodosCount={setTodosCount} />
+      <Typography.Title level={1}>Список задач</Typography.Title>
+
+      <TodoForm onTodosChanged={refreshTodos} />
 
       <TodoFilters
         filteredTodos={filteredTodos}
-        setFilteredTodos={setFilteredTodos}
         todosCount={todosCount}
+        onFilterChange={handleFilterChange}
       />
 
-      {todos.map((todo) => {
-        return (
-          <Todo
-            key={todo.id}
-            todo={todo}
-            filteredTodos={filteredTodos}
-            setTodos={setTodos}
-            setTodosCount={setTodosCount}
-          />
-        );
-      })}
+      <List
+        className="todo-list"
+        dataSource={todos}
+        locale={{
+          emptyText: <Empty description="В этом разделе пока нет задач" />,
+        }}
+        renderItem={(todo) => (
+          <List.Item className="todo-list-item">
+            <Todo
+              id={todo.id}
+              title={todo.title}
+              isDone={todo.isDone}
+              onTodosChanged={refreshTodos}
+            />
+          </List.Item>
+        )}
+      />
     </>
   );
 }

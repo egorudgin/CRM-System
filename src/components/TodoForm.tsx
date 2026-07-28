@@ -1,37 +1,43 @@
-import { getTodos, createTodo } from '../api/http.js';
-import { Button, Input, Space, Form } from 'antd';
-import type { TodosCount, TodoFilter, TodoTitle } from '../types/typesTodo.js';
+import { memo, useState } from 'react';
+import { Button, Form, Input, message, Space } from 'antd';
+
+import { createTodo } from '../api/http.js';
 
 type TodoFormProps = {
-  filteredTodos: TodoFilter;
-  setTodos: React.Dispatch<React.SetStateAction<TodoTitle[]>>;
-  setTodosCount: React.Dispatch<React.SetStateAction<TodosCount>>;
+  onTodosChanged: () => Promise<void>;
 };
 
 type FieldType = {
   title: string;
 };
 
-export default function TodoForm({ filteredTodos, setTodos, setTodosCount }: TodoFormProps) {
+function TodoForm({ onTodosChanged }: TodoFormProps) {
   const [form] = Form.useForm<FieldType>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddTodo = async (values: FieldType): Promise<void> => {
+    setIsSubmitting(true);
+
     try {
       await createTodo(values.title.trim());
-
-      const response = await getTodos(filteredTodos);
-
-      setTodos(response.todos);
-      setTodosCount(response.todosCount);
+      await onTodosChanged();
 
       form.resetFields();
-    } catch (error) {
-      alert('Ошибка при добавлении задачи!');
+      message.success('Задача добавлена');
+    } catch {
+      message.error('Не удалось добавить задачу');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <Form form={form} onFinish={handleAddTodo}>
+    <Form<FieldType>
+      form={form}
+      className="todo-create-form"
+      onFinish={handleAddTodo}
+      autoComplete="off"
+    >
       <Space.Compact style={{ width: '100%' }}>
         <Form.Item<FieldType>
           name="title"
@@ -39,21 +45,23 @@ export default function TodoForm({ filteredTodos, setTodos, setTodosCount }: Tod
           rules={[
             {
               required: true,
-              message: 'Введите свою задачу!',
+              whitespace: true,
+              message: 'Введите задачу',
             },
             {
               validator(_, value) {
-                if (!value) {
+                const trimmedTitle = value?.trim() ?? '';
+
+                if (!trimmedTitle) {
                   return Promise.resolve();
                 }
-                const trimmedTitle = value.trim() || '';
 
                 if (trimmedTitle.length < 2) {
-                  return Promise.reject(new Error('Минимум 2 символа'));
+                  return Promise.reject(new Error('Введите минимум 2 символа'));
                 }
 
                 if (trimmedTitle.length > 64) {
-                  return Promise.reject(new Error('Максимум 64 символа'));
+                  return Promise.reject(new Error('Введите максимум 64 символа'));
                 }
 
                 return Promise.resolve();
@@ -61,13 +69,15 @@ export default function TodoForm({ filteredTodos, setTodos, setTodosCount }: Tod
             },
           ]}
         >
-          <Input placeholder="Task to be done..." />
+          <Input placeholder="Введите новую задачу" />
         </Form.Item>
 
-        <Button className="add-button" type="primary" htmlType="submit">
-          Add
+        <Button className="add-button" type="primary" htmlType="submit" loading={isSubmitting}>
+          Добавить
         </Button>
       </Space.Compact>
     </Form>
   );
 }
+
+export default memo(TodoForm);

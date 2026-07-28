@@ -1,28 +1,31 @@
-import { useState } from 'react';
-import type { Dispatch, SetStateAction } from 'react';
-import { getTodos, editTodo, deleteTodo } from '../api/http.js';
-import { Button, Input, Checkbox, Form } from 'antd';
-import type { TodosCount, TodoFilter, TodoTitle } from '../types/typesTodo.js';
+import { memo, useState } from 'react';
+import { Button, Checkbox, Form, Input, message, Popconfirm, Space, Typography } from 'antd';
 import { DeleteOutlined, FormOutlined } from '@ant-design/icons';
 
+import { deleteTodo, editTodo } from '../api/http.js';
+
 type TodoProps = {
-  todo: TodoTitle;
-  filteredTodos: TodoFilter;
-  setTodos: Dispatch<SetStateAction<TodoTitle[]>>;
-  setTodosCount: Dispatch<SetStateAction<TodosCount>>;
+  id: number;
+  title: string;
+  isDone: boolean;
+  onTodosChanged: () => Promise<void>;
 };
 
 type FieldType = {
   title: string;
 };
 
-export default function Todo({ todo, filteredTodos, setTodos, setTodosCount }: TodoProps) {
+function Todo({ id, title, isDone, onTodosChanged }: TodoProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
+
   const [form] = Form.useForm<FieldType>();
 
   const handleStartEditing = (): void => {
     form.setFieldsValue({
-      title: todo.title,
+      title,
     });
 
     setIsEditing(true);
@@ -33,137 +36,160 @@ export default function Todo({ todo, filteredTodos, setTodos, setTodosCount }: T
     setIsEditing(false);
   };
 
-  const handleSaveEdit = async (): Promise<void> => {
-    try {
-      const values = await form.validateFields();
+  const handleSaveEdit = async (values: FieldType): Promise<void> => {
+    setIsSaving(true);
 
-      const editedTask = await editTodo(todo.id, {
+    try {
+      await editTodo(id, {
         title: values.title.trim(),
       });
 
-      setTodos((prev) =>
-        prev.map((currentTodo) => (currentTodo.id === todo.id ? editedTask : currentTodo)),
-      );
+      await onTodosChanged();
 
       form.resetFields();
       setIsEditing(false);
-    } catch (error) {
-      if (typeof error === 'object' && error !== null && 'errorFields' in error) {
-        return;
-      }
 
-      alert('Ошибка при редактировании задачи!');
+      message.success('Задача изменена');
+    } catch {
+      message.error('Не удалось изменить задачу');
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDeleteTodo = async (): Promise<void> => {
+    setIsDeleting(true);
+
     try {
-      await deleteTodo(todo.id);
+      await deleteTodo(id);
+      await onTodosChanged();
 
-      const response = await getTodos(filteredTodos);
-
-      setTodos(response.todos);
-      setTodosCount(response.todosCount);
-    } catch (error) {
-      alert('Ошибка при удалении задачи!');
+      message.success('Задача удалена');
+    } catch {
+      message.error('Не удалось удалить задачу');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   const handleToggleTodo = async (): Promise<void> => {
-    const nextIsDone = !todo.isDone;
+    setIsToggling(true);
 
     try {
-      await editTodo(todo.id, { isDone: nextIsDone });
+      await editTodo(id, {
+        isDone: !isDone,
+      });
 
-      const response = await getTodos(filteredTodos);
-
-      setTodos(response.todos);
-      setTodosCount(response.todosCount);
-    } catch (error) {
-      alert('Ошибка при изменении статуса задачи!');
+      await onTodosChanged();
+    } catch {
+      message.error('Не удалось изменить статус задачи');
+    } finally {
+      setIsToggling(false);
     }
   };
 
   return (
     <div className="item-todo">
-      <div>
-        <Checkbox
-          checked={todo.isDone}
-          onChange={handleToggleTodo}
-          aria-label={todo.isDone ? 'Отметить как невыполненную' : 'Отметить как выполненную'}
-        />
-      </div>
+      <Checkbox
+        checked={isDone}
+        disabled={isToggling}
+        onChange={() => {
+          void handleToggleTodo();
+        }}
+        aria-label={isDone ? 'Отметить как невыполненную' : 'Отметить как выполненную'}
+      />
 
-      <div className="todo-content">
-        {isEditing ? (
-          <Form form={form} component={false}>
-            <Form.Item<FieldType>
-              name="title"
-              style={{ marginBottom: 0 }}
-              rules={[
-                {
-                  required: true,
-                  message: 'Введите свою задачу!',
-                },
-                {
-                  validator(_, value) {
-                    if (!value) {
-                      return Promise.resolve();
-                    }
+      {isEditing ? (
+        <Form<FieldType>
+          form={form}
+          className="edit-form"
+          onFinish={handleSaveEdit}
+          autoComplete="off"
+        >
+          <Form.Item<FieldType>
+            name="title"
+            style={{ flex: 1, marginBottom: 0 }}
+            rules={[
+              {
+                required: true,
+                whitespace: true,
+                message: 'Введите задачу',
+              },
+              {
+                validator(_, value) {
+                  const trimmedTitle = value?.trim() ?? '';
 
-                    const trimmedTitle = value.trim();
-
-                    if (trimmedTitle.length < 2) {
-                      return Promise.reject(new Error('Минимум 2 символа'));
-                    }
-
-                    if (trimmedTitle.length > 64) {
-                      return Promise.reject(new Error('Максимум 64 символа'));
-                    }
-
+                  if (!trimmedTitle) {
                     return Promise.resolve();
-                  },
-                },
-              ]}
-            >
-              <Input placeholder="Напишите задачу" onPressEnter={handleSaveEdit} />
-            </Form.Item>
-          </Form>
-        ) : (
-          <div className={todo.isDone ? 'item-text strike' : 'item-text'}>{todo.title}</div>
-        )}
-      </div>
+                  }
 
-      <div className="todo-actions">
-        {isEditing ? (
-          <>
-            <Button onClick={handleSaveEdit} type="primary">
-              Save
+                  if (trimmedTitle.length < 2) {
+                    return Promise.reject(new Error('Введите минимум 2 символа'));
+                  }
+
+                  if (trimmedTitle.length > 64) {
+                    return Promise.reject(new Error('Введите максимум 64 символа'));
+                  }
+
+                  return Promise.resolve();
+                },
+              },
+            ]}
+          >
+            <Input autoFocus placeholder="Введите название задачи" />
+          </Form.Item>
+
+          <Space>
+            <Button type="primary" htmlType="submit" loading={isSaving}>
+              Сохранить
             </Button>
-            <Button onClick={handleCancelEditing}>Cancel</Button>
-          </>
-        ) : (
-          <>
+
+            <Button htmlType="button" onClick={handleCancelEditing} disabled={isSaving}>
+              Отмена
+            </Button>
+          </Space>
+        </Form>
+      ) : (
+        <>
+          <div className="todo-content">
+            <Typography.Text delete={isDone} type={isDone ? 'secondary' : undefined}>
+              {title}
+            </Typography.Text>
+          </div>
+
+          <div className="todo-actions">
             <Button
               icon={<FormOutlined />}
               onClick={handleStartEditing}
               type="primary"
-              size="large"
               aria-label="Редактировать задачу"
               title="Редактировать"
             />
-            <Button
-              icon={<DeleteOutlined />}
-              onClick={handleDeleteTodo}
-              type="primary"
-              danger
-              size="large"
-              aria-label="Удалить задачу"
-              title="Удалить"
-            />
-          </>
-        )}
-      </div>
+
+            <Popconfirm
+              title="Удалить задачу?"
+              description="Отменить это действие будет нельзя"
+              okText="Удалить"
+              cancelText="Отмена"
+              okButtonProps={{
+                danger: true,
+              }}
+              onConfirm={handleDeleteTodo}
+            >
+              <Button
+                icon={<DeleteOutlined />}
+                type="primary"
+                danger
+                loading={isDeleting}
+                aria-label="Удалить задачу"
+                title="Удалить"
+              />
+            </Popconfirm>
+          </div>
+        </>
+      )}
     </div>
   );
 }
+
+export default memo(Todo);

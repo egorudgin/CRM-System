@@ -1,38 +1,49 @@
+import { memo, useCallback, useMemo } from 'react';
 import { Tabs } from 'antd';
+
 import type { TabsProps } from 'antd';
 import type { TodoFilter, TodosCount } from '../types/typesTodo.js';
 
 type TodoFiltersProps = {
   filteredTodos: TodoFilter;
-  setFilteredTodos: React.Dispatch<React.SetStateAction<TodoFilter>>;
   todosCount: TodosCount;
+  onFilterChange: (filter: TodoFilter) => void;
 };
 
-export default function TodoFilters({
-  filteredTodos,
-  setFilteredTodos,
-  todosCount,
-}: TodoFiltersProps) {
-  const items: TabsProps['items'] = [
-    {
-      key: 'all',
-      label: `Все (${todosCount.all})`,
+function TodoFilters({ filteredTodos, todosCount, onFilterChange }: TodoFiltersProps) {
+  const items = useMemo<TabsProps['items']>(
+    () => [
+      {
+        key: 'all',
+        label: `Все (${todosCount.all})`,
+      },
+      {
+        key: 'inWork',
+        label: `В работе (${todosCount.inWork})`,
+      },
+      {
+        key: 'completed',
+        label: `Сделано (${todosCount.completed})`,
+      },
+    ],
+    [todosCount.all, todosCount.completed, todosCount.inWork],
+  );
+
+  const handleFilterChange = useCallback(
+    (key: string): void => {
+      onFilterChange(key as TodoFilter);
     },
-    {
-      key: 'inWork',
-      label: `В работе (${todosCount.inWork})`,
-    },
-    {
-      key: 'completed',
-      label: `Сделано (${todosCount.completed})`,
-    },
-  ];
+    [onFilterChange],
+  );
 
   return (
     <Tabs
+      className="todo-filters"
       activeKey={filteredTodos}
       items={items}
-      onChange={(key) => setFilteredTodos(key as TodoFilter)}
+      onChange={handleFilterChange}
     />
   );
 }
+
+export default memo(TodoFilters);

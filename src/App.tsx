@@ -1,31 +1,68 @@
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { useCallback } from 'react';
+import { Layout, Menu } from 'antd';
+import { UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+
+import type { MenuProps } from 'antd';
+
 import TodoPage from './pages/TodoPage.js';
 import ProfilePage from './pages/ProfilePage.js';
 
+const menuItems: MenuProps['items'] = [
+  {
+    key: '/',
+    icon: <UnorderedListOutlined />,
+    label: 'Список задач',
+  },
+  {
+    key: '/profile',
+    icon: <UserOutlined />,
+    label: 'Профиль',
+  },
+];
+
 export default function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleMenuClick = useCallback<NonNullable<MenuProps['onClick']>>(
+    ({ key }) => {
+      navigate(key);
+    },
+    [navigate],
+  );
+
+  const selectedMenuKey = location.pathname === '/profile' ? '/profile' : '/';
+
   return (
-    <div className="app-layout">
-      <aside className="sidebar">
-        <nav className="sidebar-nav">
-          <NavLink to="/" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
-            Список задач
-          </NavLink>
+    <Layout className="app-layout">
+      <Layout.Sider
+        className="app-sider"
+        width={220}
+        theme="light"
+        breakpoint="md"
+        collapsedWidth={0}
+      >
+        <Menu
+          className="app-menu"
+          mode="inline"
+          selectedKeys={[selectedMenuKey]}
+          items={menuItems}
+          onClick={handleMenuClick}
+        />
+      </Layout.Sider>
 
-          <NavLink
-            to="/profile"
-            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-          >
-            Профиль
-          </NavLink>
-        </nav>
-      </aside>
+      <Layout>
+        <Layout.Content className="app-content">
+          <div className="page-container">
+            <Routes>
+              <Route path="/" element={<TodoPage />} />
 
-      <main className="App">
-        <Routes>
-          <Route path="/" element={<TodoPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-        </Routes>
-      </main>
-    </div>
+              <Route path="/profile" element={<ProfilePage />} />
+            </Routes>
+          </div>
+        </Layout.Content>
+      </Layout>
+    </Layout>
   );
 }

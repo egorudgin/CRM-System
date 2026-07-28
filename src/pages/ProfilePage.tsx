@@ -1,8 +1,11 @@
+import { Typography } from 'antd';
+
 export default function ProfilePage() {
   return (
     <>
-      <h1>Профиль</h1>
-      <p>Привет</p>
+      <Typography.Title level={1}>Профиль</Typography.Title>
+
+      <Typography.Paragraph>Здесь будет информация о пользователе.</Typography.Paragraph>
     </>
   );
 }

@@ -5,25 +5,37 @@ import type {
   TodoFilter,
   GetTodosResponse,
   EditTodoChanges,
+  TodosCount,
 } from '../types/typesTodo.js';
 
+type GetTodosApiResponse = {
+  data: TodoTitle[];
+  info: TodosCount;
+};
+
+const api = axios.create({
+  baseURL: 'https://easydev.club/api/v1',
+  timeout: 10_000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 export async function getTodos(filter: TodoFilter = 'all'): Promise<GetTodosResponse> {
-  const response = await axios.get('https://easydev.club/api/v1/todos', {
+  const response = await api.get<GetTodosApiResponse>('/todos', {
     params: {
       filter,
     },
   });
 
-  const resData = response.data;
-
   return {
-    todos: resData.data,
-    todosCount: resData.info,
+    todos: response.data.data,
+    todosCount: response.data.info,
   };
 }
 
 export async function createTodo(title: string): Promise<TodoTitle> {
-  const response = await axios.post('https://easydev.club/api/v1/todos', {
+  const response = await api.post<TodoTitle>('/todos', {
     title,
     isDone: false,
   });
@@ -32,11 +44,11 @@ export async function createTodo(title: string): Promise<TodoTitle> {
 }
 
 export async function editTodo(id: number, changes: EditTodoChanges): Promise<TodoTitle> {
-  const response = await axios.put(`https://easydev.club/api/v1/todos/${id}`, changes);
+  const response = await api.put<TodoTitle>(`/todos/${id}`, changes);
 
   return response.data;
 }
 
 export async function deleteTodo(id: number): Promise<void> {
-  await axios.delete(`https://easydev.club/api/v1/todos/${id}`);
+  await api.delete(`/todos/${id}`);
 }
