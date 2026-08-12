@@ -6,7 +6,7 @@ import type {
   GetTodosResponse,
   EditTodoChanges,
   TodosCount,
-} from '../types/typesTodo.js';
+} from '../types/typesTodo';
 
 type GetTodosApiResponse = {
   data: TodoTitle[];
