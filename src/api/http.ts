@@ -1,17 +1,6 @@
 import axios from 'axios';
 
-import type {
-  TodoTitle,
-  TodoFilter,
-  GetTodosResponse,
-  EditTodoChanges,
-  TodosCount,
-} from '../types/typesTodo';
-
-type GetTodosApiResponse = {
-  data: TodoTitle[];
-  info: TodosCount;
-};
+import type { MetaResponse, Todo, TodoFilter, TodoInfo, TodoRequest } from '../types/typesTodo.js';
 
 const api = axios.create({
   baseURL: 'https://easydev.club/api/v1',
@@ -21,30 +10,24 @@ const api = axios.create({
   },
 });
 
-export async function getTodos(filter: TodoFilter = 'all'): Promise<GetTodosResponse> {
-  const response = await api.get<GetTodosApiResponse>('/todos', {
+export async function getTodos(filter: TodoFilter = 'all'): Promise<MetaResponse<Todo, TodoInfo>> {
+  const response = await api.get<MetaResponse<Todo, TodoInfo>>('/todos', {
     params: {
       filter,
     },
   });
 
-  return {
-    todos: response.data.data,
-    todosCount: response.data.info,
-  };
+  return response.data;
 }
 
-export async function createTodo(title: string): Promise<TodoTitle> {
-  const response = await api.post<TodoTitle>('/todos', {
-    title,
-    isDone: false,
-  });
+export async function createTodo(todo: TodoRequest): Promise<Todo> {
+  const response = await api.post<Todo>('/todos', todo);
 
   return response.data;
 }
 
-export async function editTodo(id: number, changes: EditTodoChanges): Promise<TodoTitle> {
-  const response = await api.put<TodoTitle>(`/todos/${id}`, changes);
+export async function editTodo(id: number, changes: TodoRequest): Promise<Todo> {
+  const response = await api.put<Todo>(`/todos/${id}`, changes);
 
   return response.data;
 }

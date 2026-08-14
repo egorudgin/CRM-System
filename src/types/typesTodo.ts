@@ -1,23 +1,27 @@
-export type TodoTitle = {
+export interface TodoRequest {
+  title?: string;
+  isDone?: boolean;
+}
+
+export interface Todo {
   id: number;
   title: string;
+  created: string;
   isDone: boolean;
-};
+}
 
-export type TodoFilter = 'all' | 'inWork' | 'completed';
-
-export type TodosCount = {
+export interface TodoInfo {
   all: number;
   completed: number;
   inWork: number;
-};
+}
 
-export type GetTodosResponse = {
-  todos: TodoTitle[];
-  todosCount: TodosCount;
-};
+export interface MetaResponse<T, N> {
+  data: T[];
+  info?: N;
+  meta: {
+    totalAmount: number;
+  };
+}
 
-export type EditTodoChanges = {
-  title?: string;
-  isDone?: boolean;
-};
+export type TodoFilter = 'all' | 'inWork' | 'completed';

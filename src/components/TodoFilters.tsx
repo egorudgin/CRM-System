@@ -2,11 +2,11 @@ import { memo, useCallback, useMemo } from 'react';
 import { Tabs } from 'antd';
 
 import type { TabsProps } from 'antd';
-import type { TodoFilter, TodosCount } from '../types/typesTodo.js';
+import type { TodoFilter, TodoInfo } from '../types/typesTodo.js';
 
 type TodoFiltersProps = {
   filteredTodos: TodoFilter;
-  todosCount: TodosCount;
+  todosCount: TodoInfo;
   onFilterChange: (filter: TodoFilter) => void;
 };
 

@@ -19,7 +19,11 @@ function TodoForm({ onTodosChanged }: TodoFormProps) {
     setIsSubmitting(true);
 
     try {
-      await createTodo(values.title.trim());
+      await createTodo({
+        title: values.title.trim(),
+        isDone: false,
+      });
+
       await onTodosChanged();
 
       form.resetFields();

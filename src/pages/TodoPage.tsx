@@ -6,13 +6,13 @@ import TodoForm from '../components/TodoForm.js';
 import TodoFilters from '../components/TodoFilters.js';
 import { getTodos } from '../api/http.js';
 
-import type { TodoFilter, TodosCount, TodoTitle } from '../types/typesTodo.js';
+import type { Todo as TodoType, TodoFilter, TodoInfo } from '../types/typesTodo.js';
 
 export default function TodoPage() {
-  const [todos, setTodos] = useState<TodoTitle[]>([]);
+  const [todos, setTodos] = useState<TodoType[]>([]);
   const [filteredTodos, setFilteredTodos] = useState<TodoFilter>('all');
 
-  const [todosCount, setTodosCount] = useState<TodosCount>({
+  const [todosCount, setTodosCount] = useState<TodoInfo>({
     all: 0,
     completed: 0,
     inWork: 0,
@@ -22,8 +22,11 @@ export default function TodoPage() {
     try {
       const response = await getTodos(filteredTodos);
 
-      setTodos(response.todos);
-      setTodosCount(response.todosCount);
+      setTodos(response.data);
+
+      if (response.info) {
+        setTodosCount(response.info);
+      }
     } catch {
       message.error({
         content: 'Не удалось загрузить задачи. Проверьте интернет-соединение',
