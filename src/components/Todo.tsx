@@ -17,9 +17,7 @@ type FieldType = {
 
 function Todo({ id, title, isDone, onTodosChanged }: TodoProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isToggling, setIsToggling] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [form] = Form.useForm<FieldType>();
 
@@ -37,7 +35,7 @@ function Todo({ id, title, isDone, onTodosChanged }: TodoProps) {
   };
 
   const handleSaveEdit = async (values: FieldType): Promise<void> => {
-    setIsSaving(true);
+    setIsLoading(true);
 
     try {
       await editTodo(id, {
@@ -53,12 +51,12 @@ function Todo({ id, title, isDone, onTodosChanged }: TodoProps) {
     } catch {
       message.error('Не удалось изменить задачу');
     } finally {
-      setIsSaving(false);
+      setIsLoading(false);
     }
   };
 
   const handleDeleteTodo = async (): Promise<void> => {
-    setIsDeleting(true);
+    setIsLoading(true);
 
     try {
       await deleteTodo(id);
@@ -68,12 +66,12 @@ function Todo({ id, title, isDone, onTodosChanged }: TodoProps) {
     } catch {
       message.error('Не удалось удалить задачу');
     } finally {
-      setIsDeleting(false);
+      setIsLoading(false);
     }
   };
 
   const handleToggleTodo = async (): Promise<void> => {
-    setIsToggling(true);
+    setIsLoading(true);
 
     try {
       await editTodo(id, {
@@ -84,7 +82,7 @@ function Todo({ id, title, isDone, onTodosChanged }: TodoProps) {
     } catch {
       message.error('Не удалось изменить статус задачи');
     } finally {
-      setIsToggling(false);
+      setIsLoading(false);
     }
   };
 
@@ -92,7 +90,7 @@ function Todo({ id, title, isDone, onTodosChanged }: TodoProps) {
     <div className="item-todo">
       <Checkbox
         checked={isDone}
-        disabled={isToggling}
+        disabled={isLoading}
         onChange={() => {
           void handleToggleTodo();
         }}
@@ -140,11 +138,11 @@ function Todo({ id, title, isDone, onTodosChanged }: TodoProps) {
           </Form.Item>
 
           <Space>
-            <Button type="primary" htmlType="submit" loading={isSaving}>
+            <Button type="primary" htmlType="submit" loading={isLoading}>
               Сохранить
             </Button>
 
-            <Button htmlType="button" onClick={handleCancelEditing} disabled={isSaving}>
+            <Button htmlType="button" onClick={handleCancelEditing} disabled={isLoading}>
               Отмена
             </Button>
           </Space>
@@ -180,7 +178,7 @@ function Todo({ id, title, isDone, onTodosChanged }: TodoProps) {
                 icon={<DeleteOutlined />}
                 type="primary"
                 danger
-                loading={isDeleting}
+                loading={isLoading}
                 aria-label="Удалить задачу"
                 title="Удалить"
               />
