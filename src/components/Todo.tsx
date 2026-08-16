@@ -114,23 +114,12 @@ function Todo({ id, title, isDone, onTodosChanged }: TodoProps) {
                 message: 'Введите задачу',
               },
               {
-                validator(_, value) {
-                  const trimmedTitle = value?.trim() ?? '';
-
-                  if (!trimmedTitle) {
-                    return Promise.resolve();
-                  }
-
-                  if (trimmedTitle.length < 2) {
-                    return Promise.reject(new Error('Введите минимум 2 символа'));
-                  }
-
-                  if (trimmedTitle.length > 64) {
-                    return Promise.reject(new Error('Введите максимум 64 символа'));
-                  }
-
-                  return Promise.resolve();
-                },
+                min: 2,
+                message: 'Введите минимум 2 символа',
+              },
+              {
+                max: 64,
+                message: 'Введите максимум 64 символа',
               },
             ]}
           >
