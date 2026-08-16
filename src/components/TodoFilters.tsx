@@ -1,8 +1,7 @@
 import { memo, useCallback, useMemo } from 'react';
 import { Tabs } from 'antd';
 
-import type { TabsProps } from 'antd';
-import type { TodoFilter, TodoInfo } from '../types/typesTodo.js';
+import type { TodoFilter, TodoInfo } from '../types/typesTodo.ts';
 
 type TodoFiltersProps = {
   filteredTodos: TodoFilter;
@@ -11,7 +10,7 @@ type TodoFiltersProps = {
 };
 
 function TodoFilters({ filteredTodos, todosCount, onFilterChange }: TodoFiltersProps) {
-  const items = useMemo<TabsProps['items']>(
+  const items = useMemo(
     () => [
       {
         key: 'all',

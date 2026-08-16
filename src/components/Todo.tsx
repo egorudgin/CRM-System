@@ -2,7 +2,7 @@ import { memo, useState } from 'react';
 import { Button, Checkbox, Form, Input, message, Popconfirm, Space, Typography } from 'antd';
 import { DeleteOutlined, FormOutlined } from '@ant-design/icons';
 
-import { deleteTodo, editTodo } from '../api/http.js';
+import { deleteTodo, editTodo } from '../api/http.ts';
 
 type TodoProps = {
   id: number;
@@ -139,7 +139,7 @@ function Todo({ id, title, isDone, onTodosChanged }: TodoProps) {
       ) : (
         <>
           <div className="todo-content">
-            <Typography.Text delete={isDone} type={isDone ? 'secondary' : undefined}>
+            <Typography.Text delete={isDone} {...(isDone ? { type: 'secondary' as const } : {})}>
               {title}
             </Typography.Text>
           </div>

@@ -1,7 +1,7 @@
 import { memo, useState } from 'react';
 import { Button, Form, Input, message, Space } from 'antd';
 
-import { createTodo } from '../api/http.js';
+import { createTodo } from '../api/http.ts';
 
 type TodoFormProps = {
   onTodosChanged: () => Promise<void>;

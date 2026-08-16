@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Empty, List, message, Typography } from 'antd';
 
-import Todo from '../components/Todo.js';
-import TodoForm from '../components/TodoForm.js';
-import TodoFilters from '../components/TodoFilters.js';
-import { getTodos } from '../api/http.js';
+import Todo from '../components/Todo.tsx';
+import TodoForm from '../components/TodoForm.tsx';
+import TodoFilters from '../components/TodoFilters.tsx';
+import { getTodos } from '../api/http.ts';
 
-import type { Todo as TodoType, TodoFilter, TodoInfo } from '../types/typesTodo.js';
+import type { Todo as TodoType, TodoFilter, TodoInfo } from '../types/typesTodo.ts';
 
 export default function TodoPage() {
   const [todos, setTodos] = useState<TodoType[]>([]);

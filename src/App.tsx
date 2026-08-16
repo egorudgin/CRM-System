@@ -5,10 +5,10 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import type { MenuProps } from 'antd';
 
-import TodoPage from './pages/TodoPage.js';
-import ProfilePage from './pages/ProfilePage.js';
+import TodoPage from './pages/TodoPage.tsx';
+import ProfilePage from './pages/ProfilePage.tsx';
 
-const menuItems: MenuProps['items'] = [
+const menuItems = [
   {
     key: '/',
     icon: <UnorderedListOutlined />,

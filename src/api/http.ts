@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import type { MetaResponse, Todo, TodoFilter, TodoInfo, TodoRequest } from '../types/typesTodo.js';
+import type { MetaResponse, Todo, TodoFilter, TodoInfo, TodoRequest } from '../types/typesTodo.ts';
 
 const api = axios.create({
   baseURL: 'https://easydev.club/api/v1',
