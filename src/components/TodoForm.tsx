@@ -2,6 +2,7 @@ import { memo, useState } from 'react';
 import { Button, Form, Input, message, Space } from 'antd';
 
 import { createTodo } from '../api/http.ts';
+import { MAX_TODO_TITLE_LENGTH, MIN_TODO_TITLE_LENGTH } from '../helpers/constants.ts';
 
 type TodoFormProps = {
   onTodosChanged: () => Promise<void>;
@@ -53,12 +54,12 @@ function TodoForm({ onTodosChanged }: TodoFormProps) {
               message: 'Введите задачу',
             },
             {
-              min: 2,
-              message: 'Введите минимум 2 символа',
+              min: MIN_TODO_TITLE_LENGTH,
+              message: `Введите минимум ${MIN_TODO_TITLE_LENGTH} символа`,
             },
             {
-              max: 64,
-              message: 'Введите максимум 64 символа',
+              max: MAX_TODO_TITLE_LENGTH,
+              message: `Введите максимум ${MAX_TODO_TITLE_LENGTH} символа`,
             },
           ]}
         >

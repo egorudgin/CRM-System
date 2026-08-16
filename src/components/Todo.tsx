@@ -3,6 +3,7 @@ import { Button, Checkbox, Form, Input, message, Popconfirm, Space, Typography }
 import { DeleteOutlined, FormOutlined } from '@ant-design/icons';
 
 import { deleteTodo, editTodo } from '../api/http.ts';
+import { MAX_TODO_TITLE_LENGTH, MIN_TODO_TITLE_LENGTH } from '../helpers/constants.ts';
 
 type TodoProps = {
   id: number;
@@ -114,12 +115,12 @@ function Todo({ id, title, isDone, onTodosChanged }: TodoProps) {
                 message: 'Введите задачу',
               },
               {
-                min: 2,
-                message: 'Введите минимум 2 символа',
+                min: MIN_TODO_TITLE_LENGTH,
+                message: `Введите минимум ${MIN_TODO_TITLE_LENGTH} символа`,
               },
               {
-                max: 64,
-                message: 'Введите максимум 64 символа',
+                max: MAX_TODO_TITLE_LENGTH,
+                message: `Введите максимум ${MAX_TODO_TITLE_LENGTH} символа`,
               },
             ]}
           >
