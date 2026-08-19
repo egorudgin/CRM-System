@@ -43,6 +43,7 @@ export default function App() {
       >
         <Menu
           className="app-menu"
+          style={{ borderInlineEnd: 'none' }}
           mode="inline"
           selectedKeys={[location.pathname]}
           items={menuItems}
@@ -55,7 +56,6 @@ export default function App() {
           <div className="page-container">
             <Routes>
               <Route path="/" element={<TodoPage />} />
-
               <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           </div>

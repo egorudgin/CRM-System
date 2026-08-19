@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Empty, List, message, Typography } from 'antd';
+import { ConfigProvider, Empty, List, message, Typography } from 'antd';
 
 import Todo from '../components/Todo.tsx';
 import TodoForm from '../components/TodoForm.tsx';
@@ -63,23 +63,34 @@ export default function TodoPage() {
         onFilterChange={handleFilterChange}
       />
 
-      <List
-        className="todo-list"
-        dataSource={todos}
-        locale={{
-          emptyText: <Empty description="В этом разделе пока нет задач" />,
+      <ConfigProvider
+        theme={{
+          components: {
+            List: {
+              itemPadding: '0',
+            },
+          },
         }}
-        renderItem={(todo) => (
-          <List.Item className="todo-list-item">
-            <Todo
-              id={todo.id}
-              title={todo.title}
-              isDone={todo.isDone}
-              onTodosChanged={refreshTodos}
-            />
-          </List.Item>
-        )}
-      />
+      >
+        <List
+          className="todo-list"
+          split={false}
+          dataSource={todos}
+          locale={{
+            emptyText: <Empty description="В этом разделе пока нет задач" />,
+          }}
+          renderItem={(todo) => (
+            <List.Item>
+              <Todo
+                id={todo.id}
+                title={todo.title}
+                isDone={todo.isDone}
+                onTodosChanged={refreshTodos}
+              />
+            </List.Item>
+          )}
+        />
+      </ConfigProvider>
     </>
   );
 }

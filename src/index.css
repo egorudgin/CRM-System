@@ -35,14 +35,12 @@ body {
 }
 
 .app-sider {
-    background: var(--color-surface) !important;
     box-shadow: var(--shadow-card);
     z-index: 2;
 }
 
 .app-menu {
     padding-top: 20px;
-    border-inline-end: none !important;
 }
 
 .app-content {
@@ -79,11 +77,6 @@ body {
 
 .todo-filters {
     margin-bottom: 12px;
-}
-
-.todo-list-item {
-    padding: 0 !important;
-    border-block-end: none !important;
 }
 
 .item-todo {
