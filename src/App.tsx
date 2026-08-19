@@ -32,8 +32,6 @@ export default function App() {
     [navigate],
   );
 
-  const selectedMenuKey = location.pathname === '/profile' ? '/profile' : '/';
-
   return (
     <Layout className="app-layout">
       <Layout.Sider
@@ -46,7 +44,7 @@ export default function App() {
         <Menu
           className="app-menu"
           mode="inline"
-          selectedKeys={[selectedMenuKey]}
+          selectedKeys={[location.pathname]}
           items={menuItems}
           onClick={handleMenuClick}
         />
